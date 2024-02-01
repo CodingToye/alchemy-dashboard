@@ -1,4 +1,8 @@
-# Getting Started with Create React App
+# Alchemy Dashboard
+
+This project is a personal project to build a dashboard with more elegant and feature rich technology.
+
+## Getting Started with Alchemy Dashboard
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
