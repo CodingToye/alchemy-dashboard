@@ -1,38 +1,79 @@
 .App {
-  text-align: center;
+    background-color: #282c34;
+    color: white;
+    min-height: 100vh;
+    padding: 24px;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.panels {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-gap: 12px;
+    margin-bottom: 24px;
+}
+
+.panels__panel {
+    outline: 1px solid white;
+    padding: 12px;
+    position: relative;
+}
+
+.panels__panel h2 {
+    margin-bottom: 12px;
+    font-weight: normal;
+}
+
+.panels__panel span {
+    color: #bada55;
+    font-size: 48px;
+}
+
+.panels__panel__actions {
+    position: absolute;
+    top: 12px;
+    right: 0;
+}
+
+button {
+    cursor: pointer;
+    padding: 12px;
+    margin-right: 12px;
+}
+
+.suffix {
+    font-size: 24px;
+    color: #d35d6e;
 }
