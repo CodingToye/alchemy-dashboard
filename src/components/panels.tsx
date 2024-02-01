@@ -8,7 +8,7 @@ interface IPanels {
 }
 
 const Panels = () => {
-    const [data, setData] = useState<IPanels[]>([
+    const originalData: IPanels[] = [
         {
             id: 1,
             label: 'Room Temperature',
@@ -33,7 +33,9 @@ const Panels = () => {
             value: '11500',
             suffix: 'kWh',
         },
-    ]);
+    ];
+
+    const [data, setData] = useState<IPanels[]>(originalData);
 
     const handleEditPanel = (id: number) => {
         const newVal = prompt('Enter a new value');
@@ -47,16 +49,26 @@ const Panels = () => {
         );
     };
 
-    const handleAddNewPanel = () => {
-        console.log('add new');
+    const handleDeletePanel = (x: number) => {
+        setData((prevData) => prevData.filter((item) => item.id !== x));
+    };
+
+    const handleAddNewPanel = (x: number) => {
+        const newPanelLabel = prompt('Enter a new label');
+        const newPanelValue = prompt('Enter a new value');
+        const newPanelSuffix = prompt('Enter a new suffix');
+        const newPanel = {
+            id: x,
+            label: newPanelLabel !== null ? newPanelLabel : '',
+            value: newPanelValue !== null ? newPanelValue : '',
+            suffix: newPanelSuffix !== null ? newPanelSuffix : '',
+        };
+        setData((prevData) => [...prevData, newPanel]);
     };
 
     const handleResetPanels = () => {
-        console.log('reset');
-    };
-
-    const handleDeletePanel = (x: number) => {
-        console.log('delete', x);
+        console.log(data);
+        setData([...originalData]);
     };
 
     return (
@@ -88,7 +100,7 @@ const Panels = () => {
                     );
                 })}
             </div>
-            <button type='button' onClick={() => handleAddNewPanel()}>
+            <button type='button' onClick={() => handleAddNewPanel(5)}>
                 Add new panel
             </button>
             <button type='button' onClick={() => handleResetPanels()}>
