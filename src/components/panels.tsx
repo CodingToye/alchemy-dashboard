@@ -1,80 +1,40 @@
-import React, { useState, useEffect } from 'react';
-
-interface IPanels {
-    id: number;
-    label: string;
-    value: string;
-    suffix: string;
-}
+import React, { useEffect } from 'react';
+import {
+    useFetchData,
+    useAddPanel,
+    useEditPanel,
+    useDeletePanel,
+    useResetPanels,
+} from '../hooks/panels.hooks';
 
 const Panels: React.FC = () => {
-    const [data, setData] = useState<IPanels[] | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
     const apiEndpoint = 'http://localhost:5000/api/data';
+    const { data, loading, error, fetchData } = useFetchData(apiEndpoint);
 
-    const fetchData = async (url: string) => {
-        try {
-            const response = await fetch(url);
-            const result: IPanels[] = await response.json();
-            return result;
-        } catch (error) {
-            console.log('Error fetching data:', error);
-            setError(error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { addNewPanel } = useAddPanel(apiEndpoint, fetchData);
+    const { editPanel } = useEditPanel(apiEndpoint, fetchData);
+    const { deletePanel } = useDeletePanel(apiEndpoint, fetchData);
+    const { resetPanels } = useResetPanels(apiEndpoint);
 
     useEffect(() => {
-        fetchData(apiEndpoint)
-            .then((result) => setData(result))
-            .catch((error) => {
-                console.log('Initial data fetch failed:', error);
-                setError(error);
-            });
-    }, []);
+        fetchData();
+    }, [fetchData]);
 
-    const handleEditPanel = (id: number) => {
-        const newVal = prompt('Enter a new value');
-        if (newVal === null || newVal.trim() === '') {
-            return;
-        }
-        setData(
-            (prevData) =>
-                prevData?.map((panel) =>
-                    panel.id === id ? { ...panel, value: newVal } : panel
-                ) ?? []
-        );
+    const handleAddNewPanel = async () => {
+        addNewPanel();
     };
 
-    const handleDeletePanel = (x: number) => {
-        setData((prevData) =>
-            prevData ? prevData.filter((item) => item.id !== x) : []
-        );
+    const handleEditPanel = async (id: number) => {
+        await editPanel(id, data);
     };
 
-    const handleAddNewPanel = (x: number) => {
-        const newPanelLabel = prompt('Enter a new label');
-        const newPanelValue = prompt('Enter a new value');
-        const newPanelSuffix = prompt('Enter a new suffix');
-        const newPanel = {
-            id: x,
-            label: newPanelLabel !== null ? newPanelLabel : '',
-            value: newPanelValue !== null ? newPanelValue : '',
-            suffix: newPanelSuffix !== null ? newPanelSuffix : '',
-        };
-        setData((prevData) => (prevData ? [...prevData, newPanel] : []));
+    const handleDeletePanel = async (id: number) => {
+        await deletePanel(id, data);
     };
 
     const handleResetPanels = async () => {
-        try {
-            const originalData = await fetchData(apiEndpoint);
-            setData(originalData);
-        } catch (error) {
-            console.log('Failed to reset panels:', error);
-        }
+        await resetPanels();
+        await fetchData();
     };
 
     return (
@@ -115,10 +75,10 @@ const Panels: React.FC = () => {
                     )}
                 </div>
             )}
-            <button type='button' onClick={() => handleAddNewPanel(5)}>
+            <button type='button' onClick={handleAddNewPanel}>
                 Add a new panel
             </button>
-            <button type='button' onClick={() => handleResetPanels()}>
+            <button type='button' onClick={handleResetPanels}>
                 Reset panels
             </button>
         </>
