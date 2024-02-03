@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+
 import {
     useFetchData,
     useAddPanel,
@@ -8,20 +9,19 @@ import {
 } from '../hooks/panels.hooks';
 
 const Panels: React.FC = () => {
-    const apiEndpoint = 'http://localhost:5000/api/data';
-    const { data, loading, error, fetchData } = useFetchData(apiEndpoint);
+    const { data, loading, error, fetchData } = useFetchData();
 
-    const { addNewPanel } = useAddPanel(apiEndpoint, fetchData);
-    const { editPanel } = useEditPanel(apiEndpoint, fetchData);
-    const { deletePanel } = useDeletePanel(apiEndpoint, fetchData);
-    const { resetPanels } = useResetPanels(apiEndpoint);
+    const { addNewPanel } = useAddPanel(fetchData);
+    const { editPanel } = useEditPanel(fetchData);
+    const { deletePanel } = useDeletePanel(fetchData);
+    const { resetPanels } = useResetPanels();
 
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
     const handleAddNewPanel = async () => {
-        addNewPanel();
+        addNewPanel(data);
     };
 
     const handleEditPanel = async (id: number) => {
@@ -43,8 +43,11 @@ const Panels: React.FC = () => {
                 <p>Loading...</p>
             ) : (
                 <div className='panels'>
-                    {data?.map((x, i) => {
-                        return (
+                    {data &&
+                    data.panels &&
+                    Array.isArray(data.panels) &&
+                    data.panels.length > 0 ? (
+                        data.panels.map((x, i) => (
                             <div className='panels__panel' key={i}>
                                 <h2>{x.label}</h2>
                                 <span>
@@ -66,8 +69,10 @@ const Panels: React.FC = () => {
                                     </button>
                                 </div>
                             </div>
-                        );
-                    })}
+                        ))
+                    ) : (
+                        <p>No data available.</p>
+                    )}
                     {error && (
                         <div style={{ color: 'red', margin: '10px' }}>
                             Error: {error.message}
