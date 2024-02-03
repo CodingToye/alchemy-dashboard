@@ -1,61 +1,114 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useMutation, useQuery, ApolloError } from '@apollo/client';
+import gql from 'graphql-tag';
 
-export interface IPanels {
+export interface IPanel {
     id: number;
     label: string;
     value: string;
     suffix: string;
 }
 
+export interface IPanels {
+    panels: IPanel[] | null;
+}
+
+const GET_PANELS = gql`
+    query {
+        panels {
+            id
+            label
+            value
+            suffix
+        }
+    }
+`;
+
+const ADD_PANEL = gql`
+    mutation addPanel($label: String!, $value: String!, $suffix: String!) {
+        addPanel(label: $label, value: $value, suffix: $suffix) {
+            label
+            value
+            suffix
+        }
+    }
+`;
+
+const UPDATE_PANEL = gql`
+    mutation UpdatePanel(
+        $id: String!
+        $label: String
+        $value: String
+        $suffix: String
+    ) {
+        updatePanel(id: $id, label: $label, value: $value, suffix: $suffix) {
+            id
+            label
+            value
+            suffix
+        }
+    }
+`;
+
+const DELETE_PANEL = gql`
+    mutation DeletePanel($id: String!) {
+        deletePanel(id: $id) {
+            id
+        }
+    }
+`;
+
+const DELETE_ALL_PANELS = gql`
+    mutation {
+        deleteAllPanels {
+            id
+        }
+    }
+`;
+
 interface IFetchDataHook {
-    data: IPanels[] | null;
+    data: IPanels | null;
     loading: boolean;
-    error: Error | null;
+    error: ApolloError | null;
     fetchData: () => Promise<void>;
 }
 
 interface IAddPanelHook {
-    addNewPanel: () => Promise<void>;
+    addNewPanel: (data: IPanels | null) => Promise<void>;
 }
 
 interface IEditPanelHook {
-    editPanel: (id: number, data: IPanels[] | null) => Promise<void>;
+    editPanel: (id: number, data: IPanels | null) => Promise<void>;
 }
 
 interface IDeletePanelHook {
-    deletePanel: (id: number, data: IPanels[] | null) => Promise<void>;
+    deletePanel: (id: number, data: IPanels | null) => Promise<void>;
 }
 
-export const useFetchData = (apiEndpoint: string): IFetchDataHook => {
-    const [data, setData] = useState<IPanels[] | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
+export const useFetchData = (): IFetchDataHook => {
+    const { data, loading, error, refetch } = useQuery(GET_PANELS, {
+        fetchPolicy: 'network-only', // Ensures a network request is made
+    });
 
-    const fetchData = useCallback(async (): Promise<void> => {
+    const fetchData = useCallback(async () => {
         try {
-            const response = await fetch(apiEndpoint);
-            const result: IPanels[] = await response.json();
-            setData(result);
+            await refetch(); // Use refetch to fetch data
         } catch (error) {
-            const typedError = error as Error;
-            console.log('Error fetching data:', error);
-            setError(typedError);
-        } finally {
-            setLoading(false);
+            console.error('Error refetching data:', error);
         }
-    }, [apiEndpoint, setData]);
+    }, [refetch]);
 
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
-    return { data, loading, error, fetchData };
+    return { data, loading, error: error || null, fetchData };
 };
 
 export const useAddPanel = (
-    apiEndpoint: string,
-    setData: React.Dispatch<React.SetStateAction<IPanels[] | null>>
+    setData: React.Dispatch<React.SetStateAction<IPanels | null>>
 ): IAddPanelHook => {
+    const [addPanel] = useMutation(ADD_PANEL);
     const addNewPanel = async (): Promise<void> => {
         const newPanelLabel = prompt('Enter a new label');
         const newPanelValue = prompt('Enter a new value');
@@ -63,32 +116,24 @@ export const useAddPanel = (
 
         if (newPanelLabel && newPanelValue && newPanelSuffix) {
             try {
-                const response = await fetch(apiEndpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
+                const response = await addPanel({
+                    variables: {
                         label: newPanelLabel,
                         value: newPanelValue,
                         suffix: newPanelSuffix,
-                    }),
+                    },
                 });
 
-                if (response.ok) {
-                    const result: IPanels = await response.json();
-                    setData(
-                        (prevData) =>
-                            (prevData
-                                ? [...prevData, result]
-                                : [result]) as IPanels[]
-                    );
-                } else {
-                    console.log(
-                        'Failed to add new panel:',
-                        response.statusText
-                    );
-                }
+                const result: IPanel = response.data.addPanel;
+
+                setData((prevData) =>
+                    prevData
+                        ? {
+                              ...prevData,
+                              panels: [...(prevData.panels || []), result],
+                          }
+                        : { panels: [result] }
+                );
             } catch (error) {
                 console.log('Failed to add new panel:', error);
             }
@@ -99,14 +144,15 @@ export const useAddPanel = (
 };
 
 export const useEditPanel = (
-    apiEndpoint: string,
-    setData: React.Dispatch<React.SetStateAction<IPanels[] | null>>
+    setData: React.Dispatch<React.SetStateAction<IPanels | null>>
 ): IEditPanelHook => {
+    const [updatePanel] = useMutation(UPDATE_PANEL);
+
     const editPanel = async (
         id: number,
-        data: IPanels[] | null
+        data: IPanels | null
     ): Promise<void> => {
-        const panelToEdit = data?.find((panel) => panel.id === id);
+        const panelToEdit = data?.panels?.find((panel) => panel.id === id);
 
         if (!panelToEdit) {
             console.error('Panel not found for editing');
@@ -122,32 +168,28 @@ export const useEditPanel = (
             panelToEdit.suffix;
 
         try {
-            const response = await fetch(`${apiEndpoint}/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+            const result = await updatePanel({
+                variables: {
+                    id: id.toString(),
                     label: editPanelLabel,
                     value: editPanelValue,
                     suffix: editPanelSuffix,
-                }),
+                },
             });
+            const updatedPanel: IPanel = result.data.updatePanel;
 
-            if (response.ok) {
-                const result: IPanels = await response.json();
-                setData((prevData) =>
-                    prevData
-                        ? prevData.map((panel) =>
+            setData((prevData) =>
+                prevData
+                    ? {
+                          ...prevData,
+                          panels: (prevData.panels || []).map((panel) =>
                               panel.id === id ? { ...panel, ...result } : panel
-                          )
-                        : []
-                );
-            } else {
-                console.log('Failed to add new panel:', response.statusText);
-            }
+                          ),
+                      }
+                    : { panels: [updatedPanel] }
+            );
         } catch (error) {
-            console.log('Failed to add new panel:', error);
+            console.log('Failed to edit panel:', error);
         }
     };
 
@@ -155,14 +197,14 @@ export const useEditPanel = (
 };
 
 export const useDeletePanel = (
-    apiEndpoint: string,
-    setData: React.Dispatch<React.SetStateAction<IPanels[] | null>>
+    setData: React.Dispatch<React.SetStateAction<IPanels | null>>
 ): IDeletePanelHook => {
+    const [deletePanelMutation] = useMutation(DELETE_PANEL);
     const deletePanel = async (
         id: number,
-        data: IPanels[] | null
+        data: IPanels | null
     ): Promise<void> => {
-        const panelToDelete = data?.find((panel) => panel.id === id);
+        const panelToDelete = data?.panels?.find((panel) => panel.id === id);
 
         if (!panelToDelete) {
             console.error('Panel not found for editing');
@@ -170,20 +212,22 @@ export const useDeletePanel = (
         }
 
         try {
-            const response = await fetch(`${apiEndpoint}/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
+            await deletePanelMutation({
+                variables: {
+                    id: id.toString(),
                 },
             });
 
-            if (response.ok) {
-                setData((prevData) =>
-                    prevData ? prevData.filter((item) => item.id !== id) : []
-                );
-            } else {
-                console.log('Failed to delete panel:', response.statusText);
-            }
+            setData((prevData) =>
+                prevData
+                    ? {
+                          ...prevData,
+                          panels: (prevData.panels || []).filter(
+                              (panel) => panel.id !== id
+                          ),
+                      }
+                    : null
+            );
         } catch (error) {
             console.log('Failed to delete panel:', error);
         }
@@ -192,27 +236,20 @@ export const useDeletePanel = (
     return { deletePanel };
 };
 
-export const useResetPanels = (apiEndpoint: string) => {
-    const { fetchData } = useFetchData(apiEndpoint);
+export const useResetPanels = () => {
+    const { fetchData } = useFetchData();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
+
+    const [deleteAllPanelsMutation] = useMutation(DELETE_ALL_PANELS);
 
     const resetPanels = useCallback(async () => {
         try {
             setLoading(true);
 
-            const response = await fetch(apiEndpoint, {
-                method: 'DELETE',
-            });
+            await deleteAllPanelsMutation();
 
-            if (response.ok) {
-                await fetchData();
-            } else {
-                console.error('Failed to reset panels:', response.statusText);
-                setError(
-                    new Error(`Failed to reset panels: ${response.statusText}`)
-                );
-            }
+            await fetchData();
         } catch (error) {
             const typedError = error as Error;
             console.error('Error resetting panels:', error);
@@ -220,7 +257,7 @@ export const useResetPanels = (apiEndpoint: string) => {
         } finally {
             setLoading(false);
         }
-    }, [apiEndpoint, fetchData]);
+    }, [fetchData, deleteAllPanelsMutation]);
 
     return { resetPanels, loading, error };
 };
