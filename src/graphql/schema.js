@@ -31,14 +31,14 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
-        addPanel: {
+        createPanel: {
             type: PanelType,
             args: {
                 label: { type: new GraphQLNonNull(GraphQLString) },
                 value: { type: new GraphQLNonNull(GraphQLString) },
                 suffix: { type: new GraphQLNonNull(GraphQLString) },
             },
-            resolve: resolvers.Mutation.addPanel,
+            resolve: resolvers.Mutation.createPanel,
         },
         updatePanel: {
             type: PanelType,
