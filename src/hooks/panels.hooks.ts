@@ -1,89 +1,27 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useMutation, useQuery, ApolloError } from '@apollo/client';
-import gql from 'graphql-tag';
+import { useMutation, useQuery } from '@apollo/client';
 
-export interface IPanel {
-    id: number;
-    label: string;
-    value: string;
-    suffix: string;
-}
+import { GET_PANELS } from '../graphql/queries';
+import {
+    CREATE_PANEL,
+    UPDATE_PANEL,
+    DELETE_PANEL,
+    DELETE_ALL_PANELS,
+} from '../graphql/mutations';
+import {
+    IPanel,
+    IPanels,
+    IFetchDataHook,
+    ICreatePanelHook,
+    IUpdatePanelHook,
+    IDeletePanelHook,
+} from '../types/panels.types';
 
-export interface IPanels {
-    panels: IPanel[] | null;
-}
-
-const GET_PANELS = gql`
-    query {
-        panels {
-            id
-            label
-            value
-            suffix
-        }
-    }
-`;
-
-const ADD_PANEL = gql`
-    mutation addPanel($label: String!, $value: String!, $suffix: String!) {
-        addPanel(label: $label, value: $value, suffix: $suffix) {
-            label
-            value
-            suffix
-        }
-    }
-`;
-
-const UPDATE_PANEL = gql`
-    mutation UpdatePanel(
-        $id: String!
-        $label: String
-        $value: String
-        $suffix: String
-    ) {
-        updatePanel(id: $id, label: $label, value: $value, suffix: $suffix) {
-            id
-            label
-            value
-            suffix
-        }
-    }
-`;
-
-const DELETE_PANEL = gql`
-    mutation DeletePanel($id: String!) {
-        deletePanel(id: $id) {
-            id
-        }
-    }
-`;
-
-const DELETE_ALL_PANELS = gql`
-    mutation {
-        deleteAllPanels {
-            id
-        }
-    }
-`;
-
-interface IFetchDataHook {
-    data: IPanels | null;
-    loading: boolean;
-    error: ApolloError | null;
-    fetchData: () => Promise<void>;
-}
-
-interface IAddPanelHook {
-    addNewPanel: (data: IPanels | null) => Promise<void>;
-}
-
-interface IEditPanelHook {
-    editPanel: (id: number, data: IPanels | null) => Promise<void>;
-}
-
-interface IDeletePanelHook {
-    deletePanel: (id: number, data: IPanels | null) => Promise<void>;
-}
+import {
+    CreatePanelInput,
+    UpdatePanelInput,
+    DeletePanelInput,
+} from '../graphql/types';
 
 export const useFetchData = (): IFetchDataHook => {
     const { data, loading, error, refetch } = useQuery(GET_PANELS, {
@@ -105,50 +43,54 @@ export const useFetchData = (): IFetchDataHook => {
     return { data, loading, error: error || null, fetchData };
 };
 
-export const useAddPanel = (
+export const useCreatePanel = (
     setData: React.Dispatch<React.SetStateAction<IPanels | null>>
-): IAddPanelHook => {
-    const [addPanel] = useMutation(ADD_PANEL);
-    const addNewPanel = async (): Promise<void> => {
+): ICreatePanelHook => {
+    const [createPanel] = useMutation(CREATE_PANEL);
+    const createNewPanel = async (input: CreatePanelInput): Promise<void> => {
+        try {
+            const response = await createPanel({
+                variables: { input },
+            });
+
+            const result: IPanel = response.data.addPanel;
+
+            setData((prevData) =>
+                prevData
+                    ? {
+                          ...prevData,
+                          panels: [...(prevData.panels || []), result],
+                      }
+                    : { panels: [result] }
+            );
+        } catch (error) {
+            console.log('Failed to add new panel:', error);
+        }
+    };
+
+    const promptAndCreatePanel = async (): Promise<void> => {
         const newPanelLabel = prompt('Enter a new label');
         const newPanelValue = prompt('Enter a new value');
         const newPanelSuffix = prompt('Enter a new suffix');
 
         if (newPanelLabel && newPanelValue && newPanelSuffix) {
-            try {
-                const response = await addPanel({
-                    variables: {
-                        label: newPanelLabel,
-                        value: newPanelValue,
-                        suffix: newPanelSuffix,
-                    },
-                });
-
-                const result: IPanel = response.data.addPanel;
-
-                setData((prevData) =>
-                    prevData
-                        ? {
-                              ...prevData,
-                              panels: [...(prevData.panels || []), result],
-                          }
-                        : { panels: [result] }
-                );
-            } catch (error) {
-                console.log('Failed to add new panel:', error);
-            }
+            const input: CreatePanelInput = {
+                label: newPanelLabel,
+                value: newPanelValue,
+                suffix: newPanelSuffix,
+            };
+            await createNewPanel(input);
         }
     };
-
-    return { addNewPanel };
+    return { createNewPanel: promptAndCreatePanel };
 };
 
-export const useEditPanel = (
+export const useUpdatePanel = (
     setData: React.Dispatch<React.SetStateAction<IPanels | null>>
-): IEditPanelHook => {
-    const [updatePanel] = useMutation(UPDATE_PANEL);
+): IUpdatePanelHook => {
+    const [_updatePanel] = useMutation(UPDATE_PANEL);
 
-    const editPanel = async (
+    const updatePanel = async (
         id: number,
         data: IPanels | null
     ): Promise<void> => {
@@ -159,22 +101,24 @@ export const useEditPanel = (
             return;
         }
 
-        const editPanelLabel =
+        const updatePanelLabel =
             prompt('Enter a new label', panelToEdit.label) ?? panelToEdit.label;
-        const editPanelValue =
+        const updatePanelValue =
             prompt('Enter a new value', panelToEdit.value) ?? panelToEdit.value;
-        const editPanelSuffix =
+        const updatePanelSuffix =
             prompt('Enter a new suffix', panelToEdit.suffix) ??
             panelToEdit.suffix;
 
+        const input: UpdatePanelInput = {
+            id: panelToEdit.id,
+            label: updatePanelLabel,
+            value: updatePanelValue,
+            suffix: updatePanelSuffix,
+        };
+
         try {
-            const result = await updatePanel({
-                variables: {
-                    id: id.toString(),
-                    label: editPanelLabel,
-                    value: editPanelValue,
-                    suffix: editPanelSuffix,
-                },
+            const result = await _updatePanel({
+                variables: { input },
             });
             const updatedPanel: IPanel = result.data.updatePanel;
 
@@ -193,29 +137,21 @@ export const useEditPanel = (
         }
     };
 
-    return { editPanel };
+    return { updatePanel };
 };
 
 export const useDeletePanel = (
     setData: React.Dispatch<React.SetStateAction<IPanels | null>>
 ): IDeletePanelHook => {
     const [deletePanelMutation] = useMutation(DELETE_PANEL);
-    const deletePanel = async (
-        id: number,
-        data: IPanels | null
-    ): Promise<void> => {
-        const panelToDelete = data?.panels?.find((panel) => panel.id === id);
-
-        if (!panelToDelete) {
-            console.error('Panel not found for editing');
-            return;
-        }
+    const deletePanel = async (id: number): Promise<void> => {
+        const input: DeletePanelInput = {
+            id,
+        };
 
         try {
             await deletePanelMutation({
-                variables: {
-                    id: id.toString(),
-                },
+                variables: { input },
             });
 
             setData((prevData) =>
@@ -236,14 +172,14 @@ export const useDeletePanel = (
     return { deletePanel };
 };
 
-export const useResetPanels = () => {
+export const useDeleteAllPanels = () => {
     const { fetchData } = useFetchData();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
     const [deleteAllPanelsMutation] = useMutation(DELETE_ALL_PANELS);
 
-    const resetPanels = useCallback(async () => {
+    const deleteAllPanels = useCallback(async () => {
         try {
             setLoading(true);
 
@@ -259,5 +195,5 @@ export const useResetPanels = () => {
         }
     }, [fetchData, deleteAllPanelsMutation]);
 
-    return { resetPanels, loading, error };
+    return { deleteAllPanels, loading, error };
 };

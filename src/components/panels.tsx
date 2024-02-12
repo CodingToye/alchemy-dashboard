@@ -2,38 +2,38 @@ import React, { useEffect } from 'react';
 
 import {
     useFetchData,
-    useAddPanel,
-    useEditPanel,
+    useCreatePanel,
+    useUpdatePanel,
     useDeletePanel,
-    useResetPanels,
+    useDeleteAllPanels,
 } from '../hooks/panels.hooks';
 
 const Panels: React.FC = () => {
     const { data, loading, error, fetchData } = useFetchData();
 
-    const { addNewPanel } = useAddPanel(fetchData);
-    const { editPanel } = useEditPanel(fetchData);
+    const { createNewPanel } = useCreatePanel(fetchData);
+    const { updatePanel } = useUpdatePanel(fetchData);
     const { deletePanel } = useDeletePanel(fetchData);
-    const { resetPanels } = useResetPanels();
+    const { deleteAllPanels } = useDeleteAllPanels();
 
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
-    const handleAddNewPanel = async () => {
-        addNewPanel(data);
+    const handleCreateNewPanel = async () => {
+        createNewPanel(data);
     };
 
-    const handleEditPanel = async (id: number) => {
-        await editPanel(id, data);
+    const handleUpdatePanel = async (id: number) => {
+        await updatePanel(id, data);
     };
 
     const handleDeletePanel = async (id: number) => {
         await deletePanel(id, data);
     };
 
-    const handleResetPanels = async () => {
-        await resetPanels();
+    const handleDeleteAllPanels = async () => {
+        await deleteAllPanels();
         await fetchData();
     };
 
@@ -57,7 +57,7 @@ const Panels: React.FC = () => {
                                 <div className='panels__panel__actions'>
                                     <button
                                         type='button'
-                                        onClick={() => handleEditPanel(x.id)}
+                                        onClick={() => handleUpdatePanel(x.id)}
                                     >
                                         Edit Panel
                                     </button>
@@ -80,10 +80,10 @@ const Panels: React.FC = () => {
                     )}
                 </div>
             )}
-            <button type='button' onClick={handleAddNewPanel}>
+            <button type='button' onClick={handleCreateNewPanel}>
                 Add a new panel
             </button>
-            <button type='button' onClick={handleResetPanels}>
+            <button type='button' onClick={handleDeleteAllPanels}>
                 Reset panels
             </button>
         </>

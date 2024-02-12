@@ -11,6 +11,7 @@
         "noUnusedParameters": true,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
+        "experimentalDecorators": true,
         "module": "commonjs",
         "moduleResolution": "node",
         "resolveJsonModule": true,
