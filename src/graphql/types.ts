@@ -3,13 +3,13 @@ import { Field, InputType } from 'type-graphql';
 @InputType()
 export class CreatePanelInput {
     @Field()
-    label: string = '';
+    label!: string;
 
     @Field()
-    value: string = '';
+    value!: string;
 
     @Field()
-    suffix: string = '';
+    suffix!: string;
 }
 
 @InputType()

@@ -53,7 +53,7 @@ export const useCreatePanel = (
                 variables: input,
             });
 
-            const result: IPanel = response.data.addPanel;
+            const result: IPanel = response.data.createPanel;
 
             setData((prevData) =>
                 prevData

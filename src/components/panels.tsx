@@ -42,26 +42,31 @@ const Panels: React.FC = () => {
             {loading ? (
                 <p>Loading...</p>
             ) : (
-                <div className='panels'>
+                <div className='panels grid grid-cols-2 gap-3'>
                     {data &&
                     data.panels &&
                     Array.isArray(data.panels) &&
                     data.panels.length > 0 ? (
                         data.panels.map((x, i) => (
-                            <div className='panels__panel' key={i}>
-                                <h2>{x.label}</h2>
-                                <span>
+                            <div
+                                className='panels__panel relative p-3 bg-charcoal hover:bg-lilac'
+                                key={i}
+                            >
+                                <h2 className='mb-3'>{x.label}</h2>
+                                <span className='text-5xl'>
                                     {x.value}
                                     <small className='suffix'>{x.suffix}</small>
                                 </span>
-                                <div className='panels__panel__actions'>
+                                <div className='panels__panel__actions absolute top-3 right-0'>
                                     <button
                                         type='button'
+                                        className='mr-3 p-2 bg-white text-charcoal text-xs'
                                         onClick={() => handleUpdatePanel(x.id)}
                                     >
                                         Edit Panel
                                     </button>
                                     <button
+                                        className='mr-3 p-2 bg-red-500 text-charcoal text-xs'
                                         type='button'
                                         onClick={() => handleDeletePanel(x.id)}
                                     >

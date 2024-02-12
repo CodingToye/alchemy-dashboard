@@ -21,13 +21,14 @@ const resolvers = {
                 const stmt = db.prepare(
                     'INSERT INTO panels (label, value, suffix) VALUES (?, ?, ?)'
                 );
+                console.log(stmt);
                 stmt.run(label, value, suffix, function (err) {
                     stmt.finalize();
                     if (err) {
                         reject(err);
                     } else {
                         const insertedPanel = {
-                            id: this.lastID.toString(),
+                            id: this.lastID,
                             label,
                             value,
                             suffix,
@@ -37,7 +38,7 @@ const resolvers = {
                 });
             });
         },
-        updatePanel: async (_, { id, label, value, suffix }) => {
+        _updatePanel: async (_, { id, label, value, suffix }) => {
             return new Promise((resolve, reject) => {
                 const stmt = db.prepare(
                     'UPDATE panels SET label = ?, value = ?, suffix = ? WHERE id = ?'
