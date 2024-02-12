@@ -15,8 +15,9 @@ const resolvers = {
         },
     },
     Mutation: {
-        addPanel: async (_, { label, value, suffix }) => {
+        createPanel: async (_, { label, value, suffix }) => {
             return new Promise((resolve, reject) => {
+                console.log(resolve);
                 const stmt = db.prepare(
                     'INSERT INTO panels (label, value, suffix) VALUES (?, ?, ?)'
                 );

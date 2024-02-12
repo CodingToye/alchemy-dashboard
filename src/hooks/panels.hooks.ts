@@ -50,7 +50,7 @@ export const useCreatePanel = (
     const createNewPanel = async (input: CreatePanelInput): Promise<void> => {
         try {
             const response = await createPanel({
-                variables: { input },
+                variables: input,
             });
 
             const result: IPanel = response.data.addPanel;
@@ -118,7 +118,7 @@ export const useUpdatePanel = (
 
         try {
             const result = await _updatePanel({
-                variables: { input },
+                variables: input,
             });
             const updatedPanel: IPanel = result.data.updatePanel;
 
@@ -151,7 +151,7 @@ export const useDeletePanel = (
 
         try {
             await deletePanelMutation({
-                variables: { input },
+                variables: input,
             });
 
             setData((prevData) =>
