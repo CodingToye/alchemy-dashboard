@@ -4,6 +4,7 @@ import {
     GraphQLString,
     GraphQLList,
     GraphQLNonNull,
+    // GraphQLID,
 } from 'graphql';
 
 import resolvers from './resolvers.js';
@@ -14,7 +15,7 @@ const PanelType = new GraphQLObjectType({
         id: { type: GraphQLString },
         label: { type: GraphQLString },
         value: { type: GraphQLString },
-        suffix: { type: GraphQLString },
+        unit: { type: GraphQLString },
     }),
 });
 
@@ -36,7 +37,7 @@ const Mutation = new GraphQLObjectType({
             args: {
                 label: { type: new GraphQLNonNull(GraphQLString) },
                 value: { type: new GraphQLNonNull(GraphQLString) },
-                suffix: { type: new GraphQLNonNull(GraphQLString) },
+                unit: { type: new GraphQLNonNull(GraphQLString) },
             },
             resolve: resolvers.Mutation.createPanel,
         },
@@ -46,7 +47,7 @@ const Mutation = new GraphQLObjectType({
                 id: { type: new GraphQLNonNull(GraphQLString) },
                 label: { type: GraphQLString },
                 value: { type: GraphQLString },
-                suffix: { type: GraphQLString },
+                unit: { type: GraphQLString },
             },
             resolve: resolvers.Mutation.updatePanel,
         },

@@ -9,13 +9,13 @@ export class CreatePanelInput {
     value!: string;
 
     @Field()
-    suffix!: string;
+    unit!: string;
 }
 
 @InputType()
 export class UpdatePanelInput {
     @Field()
-    id!: number;
+    id!: string;
 
     @Field()
     label!: string;
@@ -24,11 +24,11 @@ export class UpdatePanelInput {
     value!: string;
 
     @Field()
-    suffix!: string;
+    unit!: string;
 }
 
 @InputType()
 export class DeletePanelInput {
     @Field()
-    id!: number;
+    id!: string;
 }

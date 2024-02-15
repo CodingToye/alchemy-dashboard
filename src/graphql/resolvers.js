@@ -15,14 +15,12 @@ const resolvers = {
         },
     },
     Mutation: {
-        createPanel: async (_, { label, value, suffix }) => {
+        createPanel: async (_, { label, value, unit }) => {
             return new Promise((resolve, reject) => {
-                console.log(resolve);
                 const stmt = db.prepare(
-                    'INSERT INTO panels (label, value, suffix) VALUES (?, ?, ?)'
+                    'INSERT INTO panels (label, value, unit) VALUES (?, ?, ?)'
                 );
-                console.log(stmt);
-                stmt.run(label, value, suffix, function (err) {
+                stmt.run(label, value, unit, function (err) {
                     stmt.finalize();
                     if (err) {
                         reject(err);
@@ -31,19 +29,19 @@ const resolvers = {
                             id: this.lastID,
                             label,
                             value,
-                            suffix,
+                            unit,
                         };
                         resolve(insertedPanel);
                     }
                 });
             });
         },
-        _updatePanel: async (_, { id, label, value, suffix }) => {
+        updatePanel: async (_, { id, label, value, unit }) => {
             return new Promise((resolve, reject) => {
                 const stmt = db.prepare(
-                    'UPDATE panels SET label = ?, value = ?, suffix = ? WHERE id = ?'
+                    'UPDATE panels SET label = ?, value = ?, unit = ? WHERE id = ?'
                 );
-                stmt.run(label, value, suffix, id, function (err) {
+                stmt.run(label, value, unit, id, function (err) {
                     stmt.finalize();
                     if (err) {
                         reject(err);
@@ -52,7 +50,7 @@ const resolvers = {
                             id,
                             label,
                             value,
-                            suffix,
+                            unit,
                         };
                         resolve(updatedPanel);
                     }

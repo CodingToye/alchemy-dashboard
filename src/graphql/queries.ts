@@ -6,7 +6,7 @@ export const GET_PANELS = gql`
             id
             label
             value
-            suffix
+            unit
         }
     }
 `;
