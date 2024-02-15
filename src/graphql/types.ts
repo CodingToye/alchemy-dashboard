@@ -3,19 +3,19 @@ import { Field, InputType } from 'type-graphql';
 @InputType()
 export class CreatePanelInput {
     @Field()
-    label: string = '';
+    label!: string;
 
     @Field()
-    value: string = '';
+    value!: string;
 
     @Field()
-    suffix: string = '';
+    unit!: string;
 }
 
 @InputType()
 export class UpdatePanelInput {
     @Field()
-    id!: number;
+    id!: string;
 
     @Field()
     label!: string;
@@ -24,11 +24,11 @@ export class UpdatePanelInput {
     value!: string;
 
     @Field()
-    suffix!: string;
+    unit!: string;
 }
 
 @InputType()
 export class DeletePanelInput {
     @Field()
-    id!: number;
+    id!: string;
 }

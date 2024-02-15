@@ -1,33 +1,33 @@
 import gql from 'graphql-tag';
 
 export const CREATE_PANEL = gql`
-    mutation createPanel($label: String!, $value: String!, $suffix: String!) {
-        createPanel(label: $label, value: $value, suffix: $suffix) {
+    mutation createPanel($label: String!, $value: String!, $unit: String!) {
+        createPanel(label: $label, value: $value, unit: $unit) {
             label
             value
-            suffix
+            unit
         }
     }
 `;
 
 export const UPDATE_PANEL = gql`
-    mutation UpdatePanel(
+    mutation updatePanel(
         $id: String!
         $label: String
         $value: String
-        $suffix: String
+        $unit: String
     ) {
-        updatePanel(id: $id, label: $label, value: $value, suffix: $suffix) {
+        updatePanel(id: $id, label: $label, value: $value, unit: $unit) {
             id
             label
             value
-            suffix
+            unit
         }
     }
 `;
 
 export const DELETE_PANEL = gql`
-    mutation DeletePanel($id: String!) {
+    mutation deletePanel($id: String!) {
         deletePanel(id: $id) {
             id
         }

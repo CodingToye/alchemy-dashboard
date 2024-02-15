@@ -1,5 +1,5 @@
 import React from 'react';
-import Panels from './components/panels';
+import Panels from './components/Panels';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import './App.css';
 
@@ -10,11 +10,7 @@ function App() {
     });
     return (
         <ApolloProvider client={client}>
-            <div className='App'>
-                <header className='App-header'>
-                    <h1>Alchemy: Personal Dashboard</h1>
-                </header>
-
+            <div className='App bg-charcoal text-white h-screen'>
                 <Panels />
             </div>
         </ApolloProvider>

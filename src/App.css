@@ -1,4 +1,4 @@
-.App {
+/* .App {
     background-color: #282c34;
     color: white;
     min-height: 100vh;
@@ -38,42 +38,8 @@
     }
 }
 
-.panels {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    grid-gap: 12px;
-    margin-bottom: 24px;
-}
 
-.panels__panel {
-    outline: 1px solid white;
-    padding: 12px;
-    position: relative;
-}
-
-.panels__panel h2 {
-    margin-bottom: 12px;
-    font-weight: normal;
-}
-
-.panels__panel span {
-    color: #bada55;
-    font-size: 48px;
-}
-
-.panels__panel__actions {
-    position: absolute;
-    top: 12px;
-    right: 0;
-}
-
-button {
-    cursor: pointer;
-    padding: 12px;
-    margin-right: 12px;
-}
-
-.suffix {
+.unit {
     font-size: 24px;
     color: #d35d6e;
-}
+} */
