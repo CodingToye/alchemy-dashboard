@@ -1,5 +1,6 @@
 import React from 'react';
 import Panels from './components/Panels';
+import Toolbar from './components/Toolbar';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import './App.css';
 
@@ -11,6 +12,7 @@ function App() {
     return (
         <ApolloProvider client={client}>
             <div className='App bg-charcoal text-white h-screen'>
+                <Toolbar />
                 <Panels />
             </div>
         </ApolloProvider>

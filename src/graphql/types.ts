@@ -6,7 +6,13 @@ export class CreatePanelInput {
     label!: string;
 
     @Field()
+    target!: string;
+
+    @Field()
     value!: string;
+
+    @Field()
+    original!: string;
 
     @Field()
     unit!: string;
@@ -18,7 +24,13 @@ export class UpdatePanelInput {
     id!: string;
 
     @Field()
+    target!: string;
+
+    @Field()
     label!: string;
+
+    @Field()
+    original!: string;
 
     @Field()
     value!: string;
@@ -31,4 +43,10 @@ export class UpdatePanelInput {
 export class DeletePanelInput {
     @Field()
     id!: string;
+}
+
+@InputType()
+export class InstallToolInput {
+    @Field()
+    label!: string;
 }
