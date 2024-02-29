@@ -1,6 +1,6 @@
 import React from 'react';
-import Panels from './components/Panels';
-import Toolbar from './components/Toolbar';
+import Panels from './features/Panels/Panels';
+import Toolbar from './features/Toolbar/Toolbar';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import './App.css';
 

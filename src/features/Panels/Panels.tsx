@@ -4,10 +4,10 @@ import { PlusIcon } from '@heroicons/react/24/solid';
 
 import Panel from './Panel';
 
-import useFetchData from '../hooks/useFetchData.hook';
-import useCreatePanel from '../hooks/useCreatePanel.hook';
+import useFetchData from '../../hooks/useFetchData.hook';
+import useCreatePanel from '../../hooks/useCreatePanel.hook';
 
-import Modal from './Modal';
+import Modal from '../../components/Modal';
 
 const Panels: React.FC = () => {
     const { dataPanels, loading, error, fetchData } = useFetchData();

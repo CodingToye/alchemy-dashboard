@@ -22,7 +22,7 @@ const Input: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
     };
 
     return (
-        <fieldset className='relative'>
+        <fieldset className='relative' data-testid='input-component-test'>
             {showLabel && (
                 <label
                     htmlFor={name}
@@ -45,6 +45,7 @@ const Input: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
                 tabIndex={tabIndex}
                 value={value !== '' ? value : ''}
                 ref={ref}
+                data-testid='input-test'
             />
         </fieldset>
     );

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Flowbite, Card, Progress } from 'flowbite-react';
-import Modal from './Modal';
+import Modal from '../../components/Modal';
 
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 
-import useFetchData from '../hooks/useFetchData.hook';
-import useUpdatePanel from '../hooks/useUpdatePanel.hook';
-import useDeletePanel from '../hooks/useDeletePanel.hook';
+import useFetchData from '../../hooks/useFetchData.hook';
+import useUpdatePanel from '../../hooks/useUpdatePanel.hook';
+import useDeletePanel from '../../hooks/useDeletePanel.hook';
 
-import { valueDifference } from '../utils/panels.utils';
+import { valueDifference } from '../../utils/panels.utils';
 
 import type { CustomFlowbiteTheme } from 'flowbite-react';
 
@@ -81,7 +81,7 @@ const Panel = ({ panel }) => {
                     </div>
                 </header>
                 <div className='text-5xl flex justify-between items-end'>
-                    <div>
+                    <div data-testid='panel-value-test'>
                         {value}
                         <small className='text-lg text-inputText'>{unit}</small>
                     </div>
@@ -89,7 +89,12 @@ const Panel = ({ panel }) => {
                 <div className='bg-charcoal p-4 rounded-md'>
                     <div className='flex justify-between items-center mb-2 '>
                         <h2>Goal</h2>
-                        <span className='text-xs'>{target}</span>
+                        <span
+                            className='text-xs'
+                            data-testid='panel-target-test'
+                        >
+                            {target}
+                        </span>
                     </div>
                     <div className='flex justify-end mb-2'>
                         <span>{valueDifference(original, value)}</span>
