@@ -5,8 +5,20 @@ export const GET_PANELS = gql`
         panels {
             id
             label
+            target
             value
+            original
             unit
+        }
+    }
+`;
+
+export const GET_TOOLS = gql`
+    query {
+        tools {
+            id
+            label
+            installed
         }
     }
 `;

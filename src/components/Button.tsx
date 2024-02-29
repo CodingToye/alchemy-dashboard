@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ButtonProps {
-    onClick: () => void;
+    onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
     type?: 'button' | 'submit' | 'reset';
     children: React.ReactNode;
     mode?: 'default' | 'destructive';
@@ -20,9 +20,9 @@ const Button: React.FC<ButtonProps> = ({
             type='button'
             title={title}
             onClick={onClick}
-            className={`mr-3 p-2 ${
-                mode === 'destructive' ? 'bg-red-500' : 'bg-white'
-            } text-charcoal text-xs`}
+            className={` p-2 ${
+                mode === 'destructive' ? 'bg-red-500' : 'bg-orange'
+            } text-white font-bold uppercase text-xs rounded px-6`}
         >
             {children}
         </button>

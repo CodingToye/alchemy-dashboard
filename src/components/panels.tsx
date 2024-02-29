@@ -1,165 +1,92 @@
 import React, { useEffect } from 'react';
-import Button from './Button';
-import {
-    PlusIcon,
-    ArrowPathIcon,
-    PencilIcon,
-    TrashIcon,
-    BeakerIcon,
-} from '@heroicons/react/24/solid';
+import { Banner, Card } from 'flowbite-react';
+import { PlusIcon } from '@heroicons/react/24/solid';
+
+import Panel from './Panel';
+
+import useFetchData from '../hooks/useFetchData.hook';
+import useCreatePanel from '../hooks/useCreatePanel.hook';
 
 import Modal from './Modal';
-import {
-    useFetchData,
-    useCreatePanel,
-    useUpdatePanel,
-    useDeletePanel,
-    useDeleteAllPanels,
-} from '../hooks/panels.hooks';
 
 const Panels: React.FC = () => {
-    const { data, loading, error, fetchData } = useFetchData();
-    const { deleteAllPanels } = useDeleteAllPanels();
+    const { dataPanels, loading, error, fetchData } = useFetchData();
+
     const {
-        openModal,
-        closeModal,
-        isModalOpen,
-        modalContent,
+        openCreatePanelModal,
+        closeCreatePanelModal,
+        isCreatePanelModalOpen,
+        modalCreatePanelContent,
         handleCreatePanel,
     } = useCreatePanel(fetchData);
-
-    const {
-        openUpdateModal,
-        closeUpdateModal,
-        isUpdateModalOpen,
-        modalUpdateContent,
-        handleUpdatePanel,
-        updatedPanelData,
-    } = useUpdatePanel(fetchData, data);
-
-    const { deletePanel } = useDeletePanel(fetchData);
-
-    const handleDeletePanel = async (id: string) => {
-        await deletePanel(id, data);
-    };
-
-    const handleDeleteAllPanels = async () => {
-        await deleteAllPanels();
-        await fetchData();
-    };
 
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
+    const renderPanels = () => {
+        if (loading) {
+            return <p>Loading...</p>;
+        } else if (error) {
+            return (
+                <Banner className='flex justify-center bg-iron text-failure p-4 rounded shadow'>
+                    <p>Error: {error.message}</p>
+                </Banner>
+            );
+        } else if (
+            !dataPanels ||
+            !dataPanels.panels ||
+            dataPanels.panels.length === 0
+        ) {
+            return (
+                <>
+                    <Banner
+                        className='flex justify-center bg-iron/25 hover:bg-iron text-white p-4 rounded shadow  transition cursor-pointer'
+                        onClick={openCreatePanelModal}
+                    >
+                        <div className='flex flex-col justify-center items-center content-center h-full '>
+                            <p className='mb-6'>Currently no data available</p>
+                            <PlusIcon className='h-16 w-16 text-white/50' />
+                            <p>Add a panel</p>
+                        </div>
+                    </Banner>
+                </>
+            );
+        } else {
+            return (
+                <div className='grid grid-cols-3 gap-2 mb-3 auto-rows-fr'>
+                    {dataPanels.panels.map((panel, index) => (
+                        <Panel key={index} panel={panel} />
+                    ))}
+                    <Card
+                        className='bg-iron border-0 shadow opacity-25 hover:opacity-100 transition cursor-pointer'
+                        onClick={openCreatePanelModal}
+                    >
+                        <div className='flex flex-col justify-center items-center content-center h-full'>
+                            <PlusIcon className='h-16 w-16 text-white/50 hover:text-orange transition cursor-pointer' />
+                            <p>Add a panel</p>
+                        </div>
+                    </Card>
+                </div>
+            );
+        }
+    };
+
     return (
         <>
-            <header className='flex justify-between p-4 bg-black'>
-                <h1 className='flex font-display text-3xl'>
-                    <BeakerIcon className='h-8 w-8' />
-                </h1>
-                <div className='flex gap-2 items-center'>
-                    <PlusIcon
-                        className='h-5 w-5 text-white hover:text-bad transition cursor-pointer'
-                        onClick={openModal}
-                        title='Create a panel'
-                    />
-
-                    <ArrowPathIcon
-                        className='h-5 w-5 text-white hover:text-bad transition cursor-pointer'
-                        onClick={handleDeleteAllPanels}
-                        title='Delete all panels'
-                    />
-                </div>
-            </header>
-
-            <div className='p-4'>
-                {loading ? (
-                    <p>Loading...</p>
-                ) : (
-                    <div className='grid grid-cols-3 gap-4 mb-3'>
-                        {data &&
-                        data.panels &&
-                        Array.isArray(data.panels) &&
-                        data.panels.length > 0 ? (
-                            data.panels.map((panel, index) => (
-                                <div
-                                    className='relative p-3 bg-iron  shadow'
-                                    key={index}
-                                >
-                                    <header className='flex justify-between mb-3'>
-                                        <div>
-                                            <h2 className='text-bad text-sm uppercase'>
-                                                {panel.label}
-                                            </h2>
-                                        </div>
-                                        <div className='flex items-center gap-2'>
-                                            <PencilIcon
-                                                className='h-4 w-4 text-white hover:text-bad transition cursor-pointer'
-                                                title='Edit'
-                                                onClick={() =>
-                                                    openUpdateModal(
-                                                        panel.id,
-                                                        panel.label,
-                                                        panel.value,
-                                                        panel.unit
-                                                    )
-                                                }
-                                            />
-                                            <TrashIcon
-                                                className='h-4 w-4 text-white hover:text-bad transition cursor-pointer'
-                                                title='Delete'
-                                                onClick={() =>
-                                                    handleDeletePanel(panel.id)
-                                                }
-                                            />
-                                        </div>
-                                    </header>
-                                    <span className='text-5xl'>
-                                        {panel.value}
-                                        <small className='text-lg text-inputText'>
-                                            {panel.unit}
-                                        </small>
-                                    </span>
-                                </div>
-                            ))
-                        ) : (
-                            <div className='flex justify-center text-bad col-span-3 p-4'>
-                                <p>No data available.</p>
-                            </div>
-                        )}
-                        {error && (
-                            <div style={{ color: 'red', margin: '10px' }}>
-                                Error: {error.message}
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
+            <div className='p-4'>{renderPanels()}</div>
 
             <Modal
-                isOpen={isModalOpen}
-                onClose={closeModal}
+                isOpen={isCreatePanelModalOpen}
+                onClose={closeCreatePanelModal}
                 title='Create New Panel'
                 actionButton={{
                     label: 'Create Panel',
                     onClick: handleCreatePanel,
                 }}
+                dismissable
             >
-                {modalContent}
-            </Modal>
-
-            <Modal
-                isOpen={isUpdateModalOpen}
-                onClose={closeUpdateModal}
-                title='Update Panel'
-                actionButton={{
-                    label: 'Update Panel',
-                    onClick: () => handleUpdatePanel(updatedPanelData.id, data),
-                    args: [updatedPanelData.id, data],
-                }}
-            >
-                {modalUpdateContent}
+                {modalCreatePanelContent}
             </Modal>
         </>
     );
