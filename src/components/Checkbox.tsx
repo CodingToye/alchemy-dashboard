@@ -24,12 +24,13 @@ const Checkbox: React.FC<CheckboxProps> = ({
     };
 
     return (
-        <fieldset className='relative'>
+        <fieldset className='relative' data-testid='checkbox-component-test'>
             <input
                 type='checkbox'
                 id={id}
                 checked={isChecked}
                 onChange={handleChange}
+                data-testid='checkbox-test'
             />
             <label htmlFor={id} className='ml-2'>
                 {label}

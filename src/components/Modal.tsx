@@ -63,6 +63,7 @@ const Modal: React.FC<ModalProps> = ({
     return (
         <>
             <div
+                data-testid='modal-comp-test'
                 className={`fixed bg-charcoal inset-x-0 mx-auto top-32 z-20 max-w-lg max-h-fit rounded ${
                     closeClicked
                         ? 'animate-fade-out-up'
@@ -71,10 +72,16 @@ const Modal: React.FC<ModalProps> = ({
             >
                 <div className='modal-content shadow-xl  '>
                     <header className='flex justify-between items-center pt-4 px-4 text-white rounded-t'>
-                        <h2 className='font-display text-2xl'>{title}</h2>
+                        <h2
+                            className='font-display text-2xl'
+                            data-testid='panel-modal-title'
+                        >
+                            {title}
+                        </h2>
                         <XMarkIcon
                             className='h-6 w-6  cursor-pointer text-inherit hover:text-orange transition'
                             onClick={handleOnClose}
+                            data-testid='modal-close-button'
                         />
                     </header>
                     <div className='flex flex-col gap-4 p-4'>
@@ -95,6 +102,7 @@ const Modal: React.FC<ModalProps> = ({
                         : 'animate-backdrop-fade-in'
                 }`}
                 onClick={() => (dismissable ? handleOnClose() : '')}
+                data-testid='modal-backdrop-test'
             />
         </>
     );

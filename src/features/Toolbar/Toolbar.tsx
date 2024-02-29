@@ -1,9 +1,9 @@
 import React from 'react';
-import Modal from './Modal';
+import Modal from '../../components/Modal';
 
-import useFetchData from '../hooks/useFetchData.hook';
-import useInstallTool from '../hooks/useInstallTool.hook';
-import GetIcon from '../utils/tools.utils';
+import useFetchData from '../../hooks/useFetchData.hook';
+import useInstallTool from '../../hooks/useInstallTool.hook';
+import GetIcon from '../../utils/tools.utils';
 
 import {
     WrenchScrewdriverIcon,
