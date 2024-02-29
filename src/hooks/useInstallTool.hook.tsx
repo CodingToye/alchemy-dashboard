@@ -37,7 +37,7 @@ const useInstallTool = (
             });
 
             const updatedInstallStatus = isChecked ? true : false;
-            const response = await installToolMutation({
+            await installToolMutation({
                 variables: {
                     label: toolLabel,
                     installed: updatedInstallStatus,

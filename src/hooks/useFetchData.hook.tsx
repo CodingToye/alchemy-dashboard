@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { useQuery } from '@apollo/client';
 import { GET_PANELS, GET_TOOLS } from '../graphql/queries';
-import { IFetchDataHook, ITool, ITools } from '../types/panels.types';
+import { IFetchDataHook } from '../types/panels.types';
+import { ITool, ITools } from '../types/tools.types';
 
 export const useToolRefetch = async () => {
     const { refetch: refetchTools } = useQuery(GET_TOOLS, {
@@ -59,13 +60,15 @@ const useFetchData = (): IFetchDataHook => {
 
     useEffect(() => {
         if (dataTools && dataTools.tools) {
-            const uniqueTools = dataTools.tools.filter(
-                (tool) => !installedTools.includes(tool.label)
-            );
-            const installedToolsList = uniqueTools
-                .filter((tool: ITool) => tool.isChecked)
-                .map((tool: ITool) => tool.label);
-            setInstalledTools(installedToolsList);
+            setInstalledTools((prevInstalledTools) => {
+                const uniqueTools = dataTools.tools.filter(
+                    (tool) => !prevInstalledTools.includes(tool.label)
+                );
+                const installedToolsList = uniqueTools
+                    .filter((tool: ITool) => tool.isChecked)
+                    .map((tool: ITool) => tool.label);
+                return installedToolsList;
+            });
         }
     }, [dataTools]);
 

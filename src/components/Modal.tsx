@@ -1,7 +1,6 @@
 // Modal.tsx
 import React, { useEffect, useState, useCallback } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/solid';
-import { CheckIcon } from '@heroicons/react/24/solid';
 
 import Button from '../components/Button';
 
