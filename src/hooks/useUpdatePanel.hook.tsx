@@ -23,8 +23,6 @@ const useUpdatePanel = (
         original: '',
     });
 
-    console.log(setData);
-
     const updateFocusRef = useRef<HTMLInputElement>(null);
 
     const openUpdateModal = (

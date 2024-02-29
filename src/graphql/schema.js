@@ -27,6 +27,7 @@ const ToolType = new GraphQLObjectType({
         id: { type: GraphQLString },
         label: { type: GraphQLString },
         installed: { type: GraphQLBoolean },
+        activated: { type: GraphQLBoolean },
     }),
 });
 
@@ -87,7 +88,15 @@ const Mutation = new GraphQLObjectType({
                 label: { type: new GraphQLNonNull(GraphQLString) },
                 installed: { type: new GraphQLNonNull(GraphQLBoolean) },
             },
-            resolve: resolvers.Mutation.installTool,
+            resolve: resolvers.Mutation.installToolMutation,
+        },
+        activateTool: {
+            type: ToolType,
+            args: {
+                label: { type: new GraphQLNonNull(GraphQLString) },
+                activated: { type: new GraphQLNonNull(GraphQLBoolean) },
+            },
+            resolve: resolvers.Mutation.activateToolMutation,
         },
     },
 });

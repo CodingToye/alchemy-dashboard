@@ -3,6 +3,7 @@ import Modal from './Modal';
 
 import useFetchData from '../hooks/useFetchData.hook';
 import useInstallTool from '../hooks/useInstallTool.hook';
+import GetIcon from '../utils/tools.utils';
 
 import {
     WrenchScrewdriverIcon,
@@ -51,7 +52,7 @@ const Toolbar = () => {
                                     {tool.label}
                                 </dt>
                                 <dd className='flex items-center justify-center h-6'>
-                                    Icon...
+                                    <GetIcon type={tool.label} />
                                 </dd>
                             </dl>
                         ))}

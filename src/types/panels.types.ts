@@ -1,4 +1,5 @@
 import { ApolloError } from '@apollo/client';
+import { ITools } from './tools.types';
 
 export interface IPanel {
     id: string;
@@ -11,17 +12,6 @@ export interface IPanel {
 
 export interface IPanels {
     panels: IPanel[] | null;
-}
-
-export interface ITool {
-    id: string;
-    label: string;
-    isChecked: boolean;
-    installed: boolean;
-}
-
-export interface ITools {
-    tools: ITool[] | null;
 }
 
 export interface IFetchDataHook {
@@ -41,18 +31,6 @@ export interface ICreatePanelHook {
     handleCreatePanel: () => Promise<void>;
     isCreatePanelModalOpen: boolean;
     modalCreatePanelContent: JSX.Element;
-}
-
-export interface IInstallToolHook {
-    openInstallToolModal: () => void;
-    closeInstallToolModal: () => void;
-    handleToolCheckboxChange?: (
-        isChecked: React.ChangeEvent<HTMLInputElement>,
-        label: string
-    ) => void;
-    handleInstall: (label: string, installed: boolean) => Promise<void>;
-    isInstallToolModalOpen: boolean;
-    modalInstallToolContent: JSX.Element;
 }
 
 export interface IUpdatePanelHook {

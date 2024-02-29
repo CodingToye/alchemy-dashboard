@@ -68,10 +68,19 @@ export const DELETE_ALL_PANELS = gql`
 `;
 
 export const INSTALL_TOOL = gql`
-    mutation installTool($label: String!, $installed: Boolean!) {
+    mutation installToolMutation($label: String!, $installed: Boolean!) {
         installTool(label: $label, installed: $installed) {
             label
             installed
+        }
+    }
+`;
+
+export const ACTIVATE_TOOL = gql`
+    mutation activateToolMutation($label: String!, $activated: Boolean!) {
+        activateTool(label: $label, activated: $activated) {
+            label
+            activated
         }
     }
 `;

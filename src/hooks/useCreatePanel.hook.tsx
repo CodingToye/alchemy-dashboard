@@ -42,8 +42,6 @@ const useCreatePanel = (
                 variables: newPanelData,
             });
 
-            console.log(response);
-
             const result: IPanel = response.data.createPanel;
 
             setData((prevData) =>

@@ -1,4 +1,9 @@
 import db from '../../database.js';
+import {
+    insertPanel,
+    updatePanel,
+    deletePanel,
+} from '../../databaseOperations.js';
 
 const resolvers = {
     Query: {
@@ -30,78 +35,16 @@ const resolvers = {
     },
     Mutation: {
         createPanel: async (_, { label, target, value, original, unit }) => {
-            return new Promise((resolve, reject) => {
-                const stmt = db.prepare(
-                    'INSERT INTO panels (label, target, value, original, unit) VALUES (?, ?, ?, ?, ?)'
-                );
-
-                stmt.run(label, target, value, original, unit, function (err) {
-                    stmt.finalize();
-                    if (err) {
-                        reject(err);
-                    } else {
-                        const insertedPanel = {
-                            id: this.lastID,
-                            label,
-                            target,
-                            value,
-                            original,
-                            unit,
-                        };
-                        resolve(insertedPanel);
-                    }
-                });
-            });
+            insertPanel(label, target, value, original, unit);
         },
         updatePanel: async (
             _,
             { id, target, label, original, value, unit }
         ) => {
-            return new Promise((resolve, reject) => {
-                const stmt = db.prepare(
-                    'UPDATE panels SET label = ?, target = ?, value = ?, original = ?, unit = ? WHERE id = ?'
-                );
-                stmt.run(
-                    label,
-                    target,
-                    value,
-                    original,
-                    unit,
-                    id,
-                    function (err) {
-                        stmt.finalize();
-                        if (err) {
-                            reject(err);
-                        } else {
-                            const updatedPanel = {
-                                id,
-                                label,
-                                target,
-                                original,
-                                value,
-                                unit,
-                            };
-                            resolve(updatedPanel);
-                        }
-                    }
-                );
-            });
+            updatePanel(label, target, value, original, unit, id);
         },
         deletePanel: async (_, { id }) => {
-            return new Promise((resolve, reject) => {
-                const stmt = db.prepare('DELETE FROM panels WHERE id = ?');
-                stmt.run(id, function (err) {
-                    stmt.finalize();
-                    if (err) {
-                        reject(err);
-                    } else {
-                        const deletePanel = {
-                            id,
-                        };
-                        resolve(deletePanel);
-                    }
-                });
-            });
+            deletePanel(id);
         },
         deleteAllPanels: async () => {
             return new Promise((resolve, reject) => {
@@ -117,7 +60,7 @@ const resolvers = {
                 });
             });
         },
-        installTool: async (_, { label, installed }) => {
+        installToolMutation: async (_, { label, installed }) => {
             return new Promise((resolve, reject) => {
                 const stmt = db.prepare(
                     'UPDATE tools SET installed = ? WHERE label = ?'
@@ -134,6 +77,35 @@ const resolvers = {
                                 if (err) {
                                     reject(err);
                                 } else {
+                                    resolve(row);
+                                }
+                            }
+                        );
+                    }
+                });
+            });
+        },
+
+        activateToolMutation: async (_, { label, activated }) => {
+            return new Promise((resolve, reject) => {
+                const stmt = db.prepare(
+                    'UPDATE tools SET activated = ? WHERE label = ?'
+                );
+
+                stmt.run(activated ? 1 : 0, label, function (err) {
+                    if (err) {
+                        console.error('Error updating tool:', err);
+                        reject(err);
+                    } else {
+                        db.get(
+                            'SELECT * FROM tools WHERE label = ?',
+                            [label],
+                            (err, row) => {
+                                if (err) {
+                                    console.error('Error fetching tool:', err);
+                                    reject(err);
+                                } else {
+                                    console.log('Tool activated:', row);
                                     resolve(row);
                                 }
                             }

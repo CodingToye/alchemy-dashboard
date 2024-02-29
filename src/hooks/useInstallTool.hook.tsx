@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { IInstallToolHook, ITools, ITool } from '../types/panels.types';
+import { IInstallToolHook, ITools, ITool } from '../types/tools.types';
 import { useMutation } from '@apollo/client';
 import { INSTALL_TOOL } from '../graphql/mutations';
 
@@ -10,7 +10,7 @@ const useInstallTool = (
     dataTools: ITools | null,
     setDataTools: React.Dispatch<React.SetStateAction<ITools | null>>
 ): IInstallToolHook => {
-    const [installTool] = useMutation(INSTALL_TOOL);
+    const [installToolMutation] = useMutation(INSTALL_TOOL);
     const [isInstallToolModalOpen, setIsInstallToolModalOpen] = useState(false);
 
     const openInstallToolModal = () => {
@@ -27,6 +27,7 @@ const useInstallTool = (
                 if (tool.label === toolLabel) {
                     return { ...tool, installed: isChecked };
                 }
+
                 return tool;
             });
 
@@ -36,14 +37,12 @@ const useInstallTool = (
             });
 
             const updatedInstallStatus = isChecked ? true : false;
-            const response = await installTool({
+            const response = await installToolMutation({
                 variables: {
                     label: toolLabel,
                     installed: updatedInstallStatus,
                 },
             });
-
-            console.log(response);
         } catch (error) {
             console.log('Failed to install tool:', error);
         }
