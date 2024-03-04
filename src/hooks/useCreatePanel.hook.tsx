@@ -9,7 +9,7 @@ import Input from '../components/Input';
 const useCreatePanel = (
     setData: React.Dispatch<React.SetStateAction<IPanels | null>>
 ): ICreatePanelHook => {
-    const [createPanel] = useMutation(CREATE_PANEL);
+    const [createPanelMutation] = useMutation(CREATE_PANEL);
     const [isCreatePanelModalOpen, setIsCreatePanelModalOpen] = useState(false);
     const [newPanelData, setNewPanelData] = useState<CreatePanelInput>({
         label: '',
@@ -17,6 +17,7 @@ const useCreatePanel = (
         value: '',
         original: '',
         unit: '',
+        tag: '',
     });
 
     const createFocusRef = useRef<HTMLInputElement>(null);
@@ -36,13 +37,15 @@ const useCreatePanel = (
         }));
     };
 
-    const handleCreatePanel = async (): Promise<void> => {
+    const handleCreatePanel = async () => {
         try {
-            const response = await createPanel({
-                variables: newPanelData,
+            const response = await createPanelMutation({
+                variables: { ...newPanelData, activated: true },
             });
 
-            const result: IPanel = response.data.createPanel;
+            console.log(response);
+
+            const result: IPanel = response.data.createPanelMutation;
 
             setData((prevData) =>
                 prevData
@@ -91,6 +94,12 @@ const useCreatePanel = (
                 placeholder='Unit'
                 onChange={handleInputChange}
                 tabIndex={4}
+            />
+            <Input
+                name='tag'
+                placeholder='Tag'
+                onChange={handleInputChange}
+                tabIndex={5}
             />
         </>
     );

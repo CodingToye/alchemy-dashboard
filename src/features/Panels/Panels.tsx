@@ -59,11 +59,11 @@ const Panels: React.FC = () => {
                         <Panel key={index} panel={panel} />
                     ))}
                     <Card
-                        className='bg-iron border-0 shadow opacity-25 hover:opacity-100 transition cursor-pointer'
+                        className='bg-white/10 hover:bg-white/15 border border-dashed border-white/20 text-white/40 rounded flex items-center px-4 cursor-pointer'
                         onClick={openCreatePanelModal}
                     >
-                        <div className='flex flex-col justify-center items-center content-center h-full'>
-                            <PlusIcon className='h-16 w-16 text-white/50 hover:text-orange transition cursor-pointer' />
+                        <div className='flex flex-col justify-center items-center content-center h-full '>
+                            <PlusIcon className='h-16 w-16 text-white/40' />
                             <p>Add a panel</p>
                         </div>
                     </Card>
@@ -74,7 +74,7 @@ const Panels: React.FC = () => {
 
     return (
         <>
-            <div className='p-4'>{renderPanels()}</div>
+            <div className='px-4'>{renderPanels()}</div>
 
             <Modal
                 isOpen={isCreatePanelModalOpen}

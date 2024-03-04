@@ -14,14 +14,16 @@ export function insertPanel(label, target, value, original, unit) {
             }
 
             console.log('Data inserted successfully:', this.lastID);
-            resolve({
+            const panel = {
                 id: this.lastID,
                 label,
                 target,
                 value,
                 original,
                 unit,
-            });
+            };
+            console.log(panel);
+            resolve(panel);
         });
         stmt.finalize();
     });

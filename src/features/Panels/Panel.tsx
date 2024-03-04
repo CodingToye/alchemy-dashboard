@@ -3,6 +3,7 @@ import { Flowbite, Card, Progress } from 'flowbite-react';
 import Modal from '../../components/Modal';
 
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { TagIcon } from '@heroicons/react/16/solid';
 
 import useFetchData from '../../hooks/useFetchData.hook';
 import useUpdatePanel from '../../hooks/useUpdatePanel.hook';
@@ -40,7 +41,7 @@ const Panel = ({ panel }) => {
         }, 500);
     };
 
-    const { id, label, target, value, original, unit } = panel;
+    const { id, label, target, value, original, unit, tag } = panel;
 
     function calcPercentage(x, y) {
         return (x / y) * 100;
@@ -109,10 +110,10 @@ const Panel = ({ panel }) => {
                         />
                     </Flowbite>
                 </div>
-                {/* <footer className='flex flex-col'>
-                    <small>Created:</small>
-                    <small>Updated:</small>
-                </footer> */}
+                <footer className='flex items-center px-1'>
+                    <TagIcon className='w-3 h-3 mr-2 text-white/50' />
+                    <small className='text-white/50'>{tag}</small>
+                </footer>
             </Card>
 
             <Modal

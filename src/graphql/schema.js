@@ -18,6 +18,16 @@ const PanelType = new GraphQLObjectType({
         original: { type: GraphQLString },
         value: { type: GraphQLString },
         unit: { type: GraphQLString },
+        tag: { type: GraphQLString },
+    }),
+});
+
+const FilterType = new GraphQLObjectType({
+    name: 'Filter',
+    fields: () => ({
+        id: { type: GraphQLString },
+        filter: { type: GraphQLString },
+        activated: { type: GraphQLBoolean },
     }),
 });
 
@@ -38,6 +48,10 @@ const RootQuery = new GraphQLObjectType({
             type: new GraphQLList(PanelType),
             resolve: resolvers.Query.panels,
         },
+        filters: {
+            type: new GraphQLList(FilterType),
+            resolve: resolvers.Query.filters,
+        },
         tools: {
             type: new GraphQLList(ToolType),
             resolve: resolvers.Query.tools,
@@ -56,8 +70,32 @@ const Mutation = new GraphQLObjectType({
                 value: { type: new GraphQLNonNull(GraphQLString) },
                 original: { type: new GraphQLNonNull(GraphQLString) },
                 unit: { type: new GraphQLNonNull(GraphQLString) },
+                tag: { type: new GraphQLNonNull(GraphQLString) },
             },
-            resolve: resolvers.Mutation.createPanel,
+            resolve: resolvers.Mutation.createPanelMutation,
+        },
+        createFilter: {
+            type: FilterType,
+            args: {
+                filter: { type: new GraphQLNonNull(GraphQLString) },
+                activated: { type: new GraphQLNonNull(GraphQLBoolean) },
+            },
+            resolve: resolvers.Mutation.createFilterMutation,
+        },
+        activateFilter: {
+            type: FilterType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) },
+                activated: { type: new GraphQLNonNull(GraphQLBoolean) },
+            },
+            resolve: resolvers.Mutation.activateFilterMutation,
+        },
+        deleteFilter: {
+            type: FilterType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) },
+            },
+            resolve: resolvers.Mutation.deleteFilterMutation,
         },
         updatePanel: {
             type: PanelType,
@@ -69,14 +107,14 @@ const Mutation = new GraphQLObjectType({
                 value: { type: GraphQLString },
                 unit: { type: GraphQLString },
             },
-            resolve: resolvers.Mutation.updatePanel,
+            resolve: resolvers.Mutation.updatePanelMutation,
         },
         deletePanel: {
             type: PanelType,
             args: {
                 id: { type: new GraphQLNonNull(GraphQLString) },
             },
-            resolve: resolvers.Mutation.deletePanel,
+            resolve: resolvers.Mutation.deletePanelMutation,
         },
         deleteAllPanels: {
             type: PanelType,

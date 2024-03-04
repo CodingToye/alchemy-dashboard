@@ -9,6 +9,17 @@ export const GET_PANELS = gql`
             value
             original
             unit
+            tag
+        }
+    }
+`;
+
+export const GET_FILTERS = gql`
+    query {
+        filters {
+            id
+            filter
+            activated
         }
     }
 `;

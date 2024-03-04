@@ -1,12 +1,13 @@
 import gql from 'graphql-tag';
 
 export const CREATE_PANEL = gql`
-    mutation createPanel(
+    mutation createPanelMutation(
         $label: String!
         $target: String!
         $value: String!
         $original: String!
         $unit: String!
+        $tag: String!
     ) {
         createPanel(
             label: $label
@@ -14,18 +15,47 @@ export const CREATE_PANEL = gql`
             value: $value
             original: $original
             unit: $unit
+            tag: $tag
         ) {
             label
             target
             value
             original
             unit
+            tag
+        }
+    }
+`;
+
+export const CREATE_FILTER = gql`
+    mutation createFilterMutation($filter: String!, $activated: Boolean!) {
+        createFilter(filter: $filter, activated: $activated) {
+            filter
+            activated
+        }
+    }
+`;
+
+export const ACTIVATE_FILTER = gql`
+    mutation activateFilterMutation($id: String!, $activated: Boolean!) {
+        activateFilter(id: $id, activated: $activated) {
+            id
+            filter
+            activated
+        }
+    }
+`;
+
+export const DELETE_FILTER = gql`
+    mutation deleteFilterMutation($id: String!) {
+        deleteFilter(id: $id) {
+            id
         }
     }
 `;
 
 export const UPDATE_PANEL = gql`
-    mutation updatePanel(
+    mutation updatePanelMutation(
         $id: String!
         $label: String
         $target: String
@@ -52,7 +82,7 @@ export const UPDATE_PANEL = gql`
 `;
 
 export const DELETE_PANEL = gql`
-    mutation deletePanel($id: String!) {
+    mutation deletePanelMutation($id: String!) {
         deletePanel(id: $id) {
             id
         }

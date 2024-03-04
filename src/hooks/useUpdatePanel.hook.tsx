@@ -12,7 +12,7 @@ const useUpdatePanel = (
     setData: React.Dispatch<React.SetStateAction<IPanels | null>>,
     data: IPanels | null
 ): IUpdatePanelHook => {
-    const [_updatePanel] = useMutation(UPDATE_PANEL);
+    const [updatePanelMutation] = useMutation(UPDATE_PANEL);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [updatedPanelData, setUpdatedPanelData] = useState<UpdatePanelInput>({
         id: '',
@@ -69,11 +69,11 @@ const useUpdatePanel = (
         }
 
         try {
-            const response = await _updatePanel({
+            const response = await updatePanelMutation({
                 variables: updatedPanelData,
             });
 
-            const result: IPanel = response.data._updatePanel;
+            const result: IPanel = response.data.updatePanelMutation;
 
             setData((prevData) =>
                 prevData

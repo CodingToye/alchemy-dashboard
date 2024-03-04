@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 interface ButtonProps {
     onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -13,14 +14,16 @@ const Button: React.FC<ButtonProps> = ({
     mode = 'default',
     title,
 }) => {
+    const btnClasses = classNames('rounded py-2 px-4 text-white', {
+        'bg-orange': mode === 'default',
+        'bg-failure': mode === 'destructive',
+    });
     return (
         <button
+            className={btnClasses}
             type='button'
             title={title}
             onClick={onClick}
-            className={` p-2 ${
-                mode === 'destructive' ? 'bg-failure' : 'bg-orange'
-            } text-white font-bold uppercase text-xs rounded px-6`}
             data-testid='button-test'
         >
             {children}
