@@ -19,13 +19,13 @@ const useDeleteFilter = (
                     ? {
                           ...prevData,
                           filters: (prevData.filters || []).filter(
-                              (filter) => filter.id !== id
+                              (tag) => tag.id !== id
                           ),
                       }
                     : null
             );
         } catch (error) {
-            console.log('Failed to delete filter:', error);
+            console.log('Failed to delete tag:', error);
         }
     };
 

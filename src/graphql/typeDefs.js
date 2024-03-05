@@ -15,7 +15,7 @@ const typeDefs = gql`
 
     type Filter {
         id: String
-        filter: String
+        tag: String
         activated: Boolean
     }
 
@@ -34,7 +34,7 @@ const typeDefs = gql`
             unit: String!
             tag: String!
         ): Panel
-        createFilterMutation(filter: String!, activated: Boolean!): Filter
+        createFilterMutation(tag: String!, activated: Boolean!): Filter
         activateFilterMutation(id: String!, activated: Boolean!): Filter
         deleteFilterMutation(id: String!): Filter
         updatePanelMutation(

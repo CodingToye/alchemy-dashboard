@@ -38,27 +38,25 @@ const Filters: React.FC = () => {
         ) {
             return (
                 <>
-                    <Banner
-                        className='flex justify-center bg-iron/25 hover:bg-iron text-white p-4 rounded shadow  transition cursor-pointer'
+                    <button
                         onClick={openCreateFilterModal}
+                        className='bg-white/10  hover:bg-white/20 border border-dashed border-white/20 text-white/40 rounded flex items-center px-4 py-2 text-xs'
                     >
-                        <div className='flex flex-col justify-center items-center content-center h-full '>
-                            <p className='mb-6'>Currently no data available</p>
-                            <p>Add a filter</p>
-                        </div>
-                    </Banner>
+                        Add a filter{' '}
+                        <PlusIcon className='ml-2 h-4 w-4 text-white/4' />
+                    </button>
                 </>
             );
         } else {
             return (
                 <div className='flex justify-between'>
                     <div className='flex gap-2'>
-                        {dataFilters.filters.map((filter, index) => (
+                        {dataFilters.filters.map((tag, index) => (
                             <Filter
                                 key={index}
-                                filterTag={filter}
-                                id={filter.id}
-                                activated={filter.activated}
+                                filterTag={tag}
+                                id={tag.id}
+                                activated={tag.activated}
                             />
                         ))}
 

@@ -18,7 +18,7 @@ export const GET_FILTERS = gql`
     query {
         filters {
             id
-            filter
+            tag
             activated
         }
     }

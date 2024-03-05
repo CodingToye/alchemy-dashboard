@@ -39,7 +39,7 @@ db.run(
     `
     CREATE TABLE IF NOT EXISTS filters(
         id INTEGER PRIMARY KEY,
-        filter TEXT,
+        tag TEXT,
         activated BOOLEAN
     )
     `,
@@ -279,59 +279,70 @@ app.put('/api/data/:id', (req, res) => {
 });
 
 // Route to delete panel data
-app.delete('/api/data/:id', (req, res) => {
-    const { type } = req.body;
+// Route to delete filter data
+app.delete('/api/data/:type/:id', (req, res) => {
+    const { type } = req.params;
 
-    if (type === 'panel') {
-        const panelId = parseInt(req.params.id, 10);
-
-        return new Promise((resolve, reject) => {
-            const stmt = db.prepare('DELETE FROM panels WHERE id = ?');
-            stmt.run(panelId, function (err) {
-                stmt.finalize();
-                if (err) {
-                    reject(err);
-                } else {
-                    const deletePanel = {
-                        panelId,
-                    };
-                    resolve(deletePanel);
-                }
-            });
-        });
-    } else if (type === 'filter') {
+    if (type === 'filter') {
         const filterId = parseInt(req.params.id, 10);
 
-        return new Promise((resolve, reject) => {
-            const stmt = db.prepare('DELETE FROM filters WHERE id = ?');
-            stmt.run(filterId, function (err) {
-                stmt.finalize();
+        // Retrieve the filter name before deletion
+        db.get(
+            'SELECT tag FROM filters WHERE id = ?',
+            [filterId],
+            (err, row) => {
                 if (err) {
-                    reject(err);
-                } else {
-                    const deleteFilter = {
-                        filterId,
-                    };
-                    resolve(deleteFilter);
+                    console.error('Error retrieving filter name:', err);
+                    res.status(500).json({ error: 'Internal Server Error' });
+                    return;
                 }
-            });
-        });
+
+                const filterName = row ? row.tag : null;
+
+                if (!filterName) {
+                    console.error('Filter not found');
+                    res.status(404).json({ error: 'Filter not found' });
+                    return;
+                }
+
+                // Update associated panels
+                const updatePanelStmt = db.prepare(
+                    'UPDATE panels SET tag = null WHERE tag = ?'
+                );
+                updatePanelStmt.run(filterName, function (err) {
+                    if (err) {
+                        console.error('Error updating panels:', err);
+                        res.status(500).json({
+                            error: 'Internal Server Error',
+                        });
+                        return;
+                    }
+                    console.log(
+                        'Tags removed from panels associated with filter:',
+                        filterName
+                    );
+
+                    // Now delete the filter
+                    const deleteFilterStmt = db.prepare(
+                        'DELETE FROM filters WHERE id = ?'
+                    );
+                    deleteFilterStmt.run(filterId, function (err) {
+                        if (err) {
+                            console.error('Error deleting filter:', err);
+                            res.status(500).json({
+                                error: 'Internal Server Error',
+                            });
+                            return;
+                        }
+                        console.log('Filter successfully deleted:', filterId);
+                        res.json({ message: 'Filter successfully deleted' });
+                    });
+                });
+            }
+        );
     } else {
-        return res.status(400).json({ error: 'Unsupported entity type' });
+        res.status(400).json({ error: 'Unsupported entity type' });
     }
-});
-
-// Route to delete all panel data
-app.delete('/api/data', (_, res) => {
-    db.run('DELETE FROM panels', (err) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Internal Server Error' });
-            return;
-        }
-
-        res.json({ message: 'All panels deleted successfully' });
-    });
 });
 
 // GraphQL endpoint

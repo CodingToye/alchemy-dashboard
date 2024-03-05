@@ -110,10 +110,12 @@ const Panel = ({ panel }) => {
                         />
                     </Flowbite>
                 </div>
-                <footer className='flex items-center px-1'>
-                    <TagIcon className='w-3 h-3 mr-2 text-white/50' />
-                    <small className='text-white/50'>{tag}</small>
-                </footer>
+                {tag && (
+                    <footer className='flex items-center px-1'>
+                        <TagIcon className='w-3 h-3 mr-2 text-white/50' />
+                        <small className='text-white/50'>{tag}</small>
+                    </footer>
+                )}
             </Card>
 
             <Modal

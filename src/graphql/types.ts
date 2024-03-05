@@ -24,7 +24,9 @@ export class CreatePanelInput {
 @InputType()
 export class CreateFilterInput {
     @Field()
-    filter!: string;
+    tag!: string;
+
+    @Field()
     activated!: boolean;
 }
 
@@ -32,6 +34,8 @@ export class CreateFilterInput {
 export class ActivateFilterInput {
     @Field()
     id!: string;
+
+    @Field()
     activated!: boolean;
 }
 

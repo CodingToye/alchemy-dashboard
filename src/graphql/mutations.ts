@@ -28,9 +28,9 @@ export const CREATE_PANEL = gql`
 `;
 
 export const CREATE_FILTER = gql`
-    mutation createFilterMutation($filter: String!, $activated: Boolean!) {
-        createFilter(filter: $filter, activated: $activated) {
-            filter
+    mutation createFilterMutation($tag: String!, $activated: Boolean!) {
+        createFilter(tag: $tag, activated: $activated) {
+            tag
             activated
         }
     }
@@ -40,7 +40,6 @@ export const ACTIVATE_FILTER = gql`
     mutation activateFilterMutation($id: String!, $activated: Boolean!) {
         activateFilter(id: $id, activated: $activated) {
             id
-            filter
             activated
         }
     }

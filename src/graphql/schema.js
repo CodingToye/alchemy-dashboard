@@ -26,7 +26,7 @@ const FilterType = new GraphQLObjectType({
     name: 'Filter',
     fields: () => ({
         id: { type: GraphQLString },
-        filter: { type: GraphQLString },
+        tag: { type: GraphQLString },
         activated: { type: GraphQLBoolean },
     }),
 });
@@ -77,7 +77,7 @@ const Mutation = new GraphQLObjectType({
         createFilter: {
             type: FilterType,
             args: {
-                filter: { type: new GraphQLNonNull(GraphQLString) },
+                tag: { type: new GraphQLNonNull(GraphQLString) },
                 activated: { type: new GraphQLNonNull(GraphQLBoolean) },
             },
             resolve: resolvers.Mutation.createFilterMutation,

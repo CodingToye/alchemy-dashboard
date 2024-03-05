@@ -16,7 +16,9 @@ const Filter = ({ filterTag, id, activated }) => {
 
     const [deletedFilterId, setDeletedFilterId] = useState('');
     const [activatedFilter, setActivatedFilter] = useState(activated);
-    const { filter } = filterTag;
+    const { tag } = filterTag;
+
+    console.log(dataFilters);
 
     const handleActivateFilter = async () => {
         setActivatedFilter(!activatedFilter);
@@ -36,7 +38,7 @@ const Filter = ({ filterTag, id, activated }) => {
         event.stopPropagation();
         setDeletedFilterId(id);
         setTimeout(() => {
-            deleteFilter(id, dataFilters);
+            deleteFilter(id);
         }, 500);
     };
 
@@ -51,7 +53,7 @@ const Filter = ({ filterTag, id, activated }) => {
                         : 'animate-fade-in-down'
                 }`}
             >
-                {filter}
+                {tag}
                 <XMarkIcon
                     className='ml-2 w-3.5 h-3.5'
                     onClick={(e) => handleDeleteFilter(e, id)}

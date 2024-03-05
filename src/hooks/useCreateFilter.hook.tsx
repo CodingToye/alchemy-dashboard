@@ -13,7 +13,7 @@ const useCreateFilter = (
     const [isCreateFilterModalOpen, setIsCreateFilterModalOpen] =
         useState(false);
     const [newFilterData, setNewFilterData] = useState<CreateFilterInput>({
-        filter: '',
+        tag: '',
         activated: false,
     });
 
@@ -51,6 +51,8 @@ const useCreateFilter = (
                     : { filters: [{ ...result }] }
             );
 
+            console.log(response);
+
             closeCreateFilterModal();
         } catch (error) {
             console.log('Failed to add new filter:', error);
@@ -66,7 +68,7 @@ const useCreateFilter = (
     const modalCreateFilterContent = (
         <>
             <Input
-                name='filter'
+                name='tag'
                 placeholder='Filter'
                 onChange={handleInputChange}
                 tabIndex={1}

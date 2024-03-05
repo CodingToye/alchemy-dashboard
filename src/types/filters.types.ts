@@ -1,6 +1,6 @@
 export interface IFilter {
     id: string;
-    filter: string;
+    tag: string;
     activated: boolean;
 }
 
@@ -18,5 +18,5 @@ export interface ICreateFilterHook {
 }
 
 export interface IDeleteFilterHook {
-    deleteFilter: (id: string, data: IFilters | null) => Promise<void>;
+    deleteFilter: (id: string) => Promise<void>;
 }
