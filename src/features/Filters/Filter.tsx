@@ -9,7 +9,7 @@ import useDeleteFilter from '../../hooks/useDeleteFilter.hook';
 import { useMutation } from '@apollo/client';
 
 const Filter = ({ filterTag, id, activated }) => {
-    const { dataFilters, fetchData } = useFetchData();
+    const { fetchData } = useFetchData();
     const [activateFilterMutation] = useMutation(ACTIVATE_FILTER);
 
     const { deleteFilter } = useDeleteFilter(fetchData);
@@ -17,8 +17,6 @@ const Filter = ({ filterTag, id, activated }) => {
     const [deletedFilterId, setDeletedFilterId] = useState('');
     const [activatedFilter, setActivatedFilter] = useState(activated);
     const { tag } = filterTag;
-
-    console.log(dataFilters);
 
     const handleActivateFilter = async () => {
         setActivatedFilter(!activatedFilter);
@@ -32,7 +30,7 @@ const Filter = ({ filterTag, id, activated }) => {
         }
     };
     const handleDeleteFilter = async (
-        event: React.MouseEvent<HTMLButtonElement>,
+        event: React.MouseEvent<SVGSVGElement>,
         id: string
     ) => {
         event.stopPropagation();

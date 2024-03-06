@@ -44,6 +44,7 @@ const typeDefs = gql`
             original: String
             value: String
             unit: String
+            tag: String
         ): Panel
         deletePanelMutation(id: String!): Panel
         deleteAllPanels: Panel

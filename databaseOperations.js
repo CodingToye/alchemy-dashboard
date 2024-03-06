@@ -8,12 +8,12 @@ export function insertPanel(label, target, value, original, unit) {
 
         stmt.run(label, target, value, original, unit, function (err) {
             if (err) {
-                console.log('Error inserting data:', err);
+                console.log('Error inserting panel data:', err);
                 reject(err);
                 return;
             }
 
-            console.log('Data inserted successfully:', this.lastID);
+            console.log('Panel data inserted successfully:', this.lastID);
             const panel = {
                 id: this.lastID,
                 label,
@@ -22,7 +22,6 @@ export function insertPanel(label, target, value, original, unit) {
                 original,
                 unit,
             };
-            console.log(panel);
             resolve(panel);
         });
         stmt.finalize();

@@ -20,14 +20,8 @@ export const useToolRefetch = async () => {
         };
 
         fetchData();
-
-        // Optionally return the refetch function if needed
     }, [refetchTools]);
-
-    // Return any additional data or functions needed
-    return {
-        // Add any additional data or functions here
-    };
+    return;
 };
 
 const useFetchData = (): IFetchDataHook => {

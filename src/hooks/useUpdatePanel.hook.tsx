@@ -21,6 +21,7 @@ const useUpdatePanel = (
         value: '',
         unit: '',
         original: '',
+        tag: '',
     });
 
     const updateFocusRef = useRef<HTMLInputElement>(null);
@@ -31,7 +32,8 @@ const useUpdatePanel = (
         target: string,
         value: string,
         original: string,
-        unit: string
+        unit: string,
+        tag: string
     ) => {
         setUpdatedPanelData((prevData) => ({
             ...prevData,
@@ -41,6 +43,7 @@ const useUpdatePanel = (
             value,
             original: value,
             unit,
+            tag,
         }));
 
         setIsUpdateModalOpen(true);
@@ -127,6 +130,13 @@ const useUpdatePanel = (
                 onChange={(e) => handleInputChange(e, 'unit')}
                 value={updatedPanelData.unit}
                 tabIndex={4}
+            />
+            <Input
+                name='tag'
+                showLabel
+                onChange={(e) => handleInputChange(e, 'tag')}
+                value={updatedPanelData.tag}
+                tabIndex={5}
             />
         </>
     );

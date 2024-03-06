@@ -33,3 +33,5 @@ const useDeleteFilter = (
 };
 
 export default useDeleteFilter;
+
+// TODO Add client side error handling

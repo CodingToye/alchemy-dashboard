@@ -9,7 +9,7 @@ import useFetchData from '../../hooks/useFetchData.hook';
 import useUpdatePanel from '../../hooks/useUpdatePanel.hook';
 import useDeletePanel from '../../hooks/useDeletePanel.hook';
 
-import { valueDifference } from '../../utils/panels.utils';
+import { valueDifference, calcPercentage } from '../../utils/panels.utils';
 
 import type { CustomFlowbiteTheme } from 'flowbite-react';
 
@@ -43,10 +43,6 @@ const Panel = ({ panel }) => {
 
     const { id, label, target, value, original, unit, tag } = panel;
 
-    function calcPercentage(x, y) {
-        return (x / y) * 100;
-    }
-
     const progressToTarget = calcPercentage(value, target);
     return (
         <>
@@ -70,7 +66,8 @@ const Panel = ({ panel }) => {
                                     target,
                                     value,
                                     original,
-                                    unit
+                                    unit,
+                                    tag
                                 )
                             }
                         />

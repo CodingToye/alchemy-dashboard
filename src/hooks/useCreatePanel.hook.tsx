@@ -5,7 +5,9 @@ import { useMutation } from '@apollo/client';
 import { CREATE_PANEL } from '../graphql/mutations';
 import { CreatePanelInput } from '../graphql/types';
 
-import Input from '../components/Input';
+import { useForm } from 'react-hook-form';
+import Input, { IFormValues } from '../components/Input';
+
 const useCreatePanel = (
     setData: React.Dispatch<React.SetStateAction<IPanels | null>>
 ): ICreatePanelHook => {
@@ -19,6 +21,7 @@ const useCreatePanel = (
         unit: '',
         tag: '',
     });
+    const { register } = useForm<IFormValues>();
 
     const createFocusRef = useRef<HTMLInputElement>(null);
 
@@ -71,35 +74,41 @@ const useCreatePanel = (
     const modalCreatePanelContent = (
         <>
             <Input
-                name='label'
+                inputLabel='label'
                 placeholder='Label'
                 onChange={handleInputChange}
                 tabIndex={1}
                 ref={createFocusRef}
+                register={register}
+                required
             />
             <Input
-                name='target'
+                inputLabel='target'
                 placeholder='Target'
                 onChange={handleInputChange}
                 tabIndex={2}
+                register={register}
             />
             <Input
-                name='value'
+                inputLabel='value'
                 placeholder='Value'
                 onChange={handleInputChange}
                 tabIndex={3}
+                register={register}
             />
             <Input
-                name='unit'
+                inputLabel='unit'
                 placeholder='Unit'
                 onChange={handleInputChange}
                 tabIndex={4}
+                register={register}
             />
             <Input
-                name='tag'
+                inputLabel='tag'
                 placeholder='Tag'
                 onChange={handleInputChange}
                 tabIndex={5}
+                register={register}
             />
         </>
     );
@@ -115,3 +124,5 @@ const useCreatePanel = (
 };
 
 export default useCreatePanel;
+
+// Check for duplicate labels, add UNIQUE in sql statement

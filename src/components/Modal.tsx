@@ -38,7 +38,6 @@ const Modal: React.FC<ModalProps> = ({
     useEffect(() => {
         const handleEscapeKeyPress = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
-                console.log('escape key pressed');
                 handleOnClose();
             }
         };
@@ -52,10 +51,12 @@ const Modal: React.FC<ModalProps> = ({
         };
     }, [isOpen, handleOnClose]);
 
+    // TODO Check that this function is not calling the closeCreateFilterModal() function
     const handleOnSave = (event: React.MouseEvent<HTMLButtonElement>) => {
+        console.log('handleOnSave...');
         event.preventDefault();
         actionButton.onClick(event, ...((actionButton.args as []) || []));
-        onClose(); // Close the modal after the action is triggered
+        onClose();
     };
 
     if (!isOpen) return null;
@@ -109,3 +110,5 @@ const Modal: React.FC<ModalProps> = ({
 };
 
 export default Modal;
+
+// TODO Add 'enter' key as a way to shortcut the click event

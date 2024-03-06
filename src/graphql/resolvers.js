@@ -76,12 +76,12 @@ const resolvers = {
                     tag,
                     function (err) {
                         if (err) {
-                            console.log('Error inserting data:', err);
+                            console.log('Error inserting panel data:', err);
                             reject(err);
                             return;
                         }
 
-                        console.log('Data inserted successfully:', this.lastID);
+                        console.log('Panel data inserted successfully:', label);
                         const panel = {
                             id: this.lastID,
                             label,
@@ -97,33 +97,57 @@ const resolvers = {
                 );
                 panelStmt.finalize();
             })
-                .then((panel) => {
-                    return new Promise((resolve, reject) => {
-                        const filterStmt = db.prepare(
-                            'INSERT INTO filters (tag, activated) VALUES (?, ?)'
-                        );
-                        filterStmt.run(tag, true, function (filterErr) {
-                            if (filterErr) {
-                                console.log(
-                                    'Error inserting tag data',
-                                    filterErr
-                                );
-                                reject(filterErr);
-                                return;
-                            }
+                .then(async (panel) => {
+                    const checkTagExistsInFilters = (tag) => {
+                        return new Promise((resolve, reject) => {
+                            db.get(
+                                'SELECT COUNT(*) AS count FROM filters WHERE tag = ?',
+                                [tag],
+                                (err, row) => {
+                                    if (err) {
+                                        console.log(
+                                            'Error checking if tag exists in filters:',
+                                            err
+                                        );
+                                        reject(err);
+                                        return;
+                                    }
 
-                            console.log(
-                                'Filter data inserted successfully',
-                                this.lastID
+                                    resolve(row.count > 0);
+                                }
                             );
-                            resolve(panel);
                         });
-                        filterStmt.finalize();
-                    });
+                    };
+
+                    const tagExists = await checkTagExistsInFilters(tag);
+                    if (!tagExists) {
+                        return new Promise((resolve, reject) => {
+                            const filterStmt = db.prepare(
+                                'INSERT INTO filters (tag, activated) VALUES (?, ?)'
+                            );
+                            filterStmt.run(tag, true, function (filterErr) {
+                                if (filterErr) {
+                                    console.log(
+                                        'Error inserting filter data',
+                                        filterErr
+                                    );
+                                    reject(filterErr);
+                                    return;
+                                }
+
+                                console.log(
+                                    'Filter data inserted successfully',
+                                    this.lastID
+                                );
+                                resolve(panel);
+                            });
+                            filterStmt.finalize();
+                        });
+                    }
                 })
                 .catch((error) => {
                     console.error(
-                        'Error creating panel and inserting tag:',
+                        'Error creating panel and inserting filter:',
                         error
                     );
                     throw error;
@@ -137,13 +161,11 @@ const resolvers = {
 
                 stmt.run(tag, activated, function (err) {
                     if (err) {
-                        console.log('Error inserting data:', err);
+                        console.log('Error inserting filter data:', err);
                         reject(err);
                         return;
                     }
 
-                    console.log('createFilterMutation - tag', tag);
-                    console.log('createFilterMutation - activated', activated);
                     const _filter = { tag, activated };
                     resolve(_filter);
                 });
@@ -157,7 +179,10 @@ const resolvers = {
                 );
                 stmt.run(activated ? 1 : 0, id, function (err) {
                     if (err) {
-                        console.error('Error updating tag in database:', err);
+                        console.error(
+                            'Error updating filter in database:',
+                            err
+                        );
                         throw err;
                     }
                 });
@@ -170,13 +195,13 @@ const resolvers = {
                         (err, row) => {
                             if (err) {
                                 console.error(
-                                    'Error retrieving updated tag:',
+                                    'Error retrieving updated filter:',
                                     err
                                 );
                                 reject(err);
                             } else {
                                 console.log(
-                                    'Data updated successfully:',
+                                    'Filter data updated successfully:',
                                     activated
                                 );
                                 resolve(row);
@@ -187,13 +212,12 @@ const resolvers = {
 
                 return updatedFilter;
             } catch (error) {
-                console.error('Error activating tag:', error);
+                console.error('Error activating filter:', error);
                 throw error;
             }
         },
         deleteFilterMutation: async (_, { id }) => {
             return new Promise((resolve, reject) => {
-                // Retrieve filter name before deletion
                 db.get(
                     'SELECT tag FROM filters WHERE id = ?',
                     [id],
@@ -212,7 +236,6 @@ const resolvers = {
                             return;
                         }
 
-                        // Delete the filter
                         const deleteFilterStmt = db.prepare(
                             'DELETE FROM filters WHERE id = ?'
                         );
@@ -227,7 +250,6 @@ const resolvers = {
                                 filterName
                             );
 
-                            // Update associated panels
                             const updatePanelStmt = db.prepare(
                                 'UPDATE panels SET tag = null WHERE tag = ?'
                             );
@@ -241,7 +263,7 @@ const resolvers = {
                                     return;
                                 }
                                 console.log(
-                                    'Tag removed from panels associated with filter:',
+                                    'Filter removed from panels associated with filter:',
                                     filterName
                                 );
                                 resolve({ id });
@@ -255,37 +277,71 @@ const resolvers = {
 
         updatePanelMutation: async (
             _,
-            { id, target, label, original, value, unit }
+            { id, target, label, original, value, unit, tag }
         ) => {
             return new Promise((resolve, reject) => {
-                const stmt = db.prepare(
-                    'UPDATE panels SET label = ?, target = ?, value = ?, original = ?, unit = ? WHERE id = ?'
+                const panelStmt = db.prepare(
+                    'UPDATE panels SET label = ?, target = ?, value = ?, original = ?, unit = ?, tag = ? WHERE id = ?'
                 );
-                stmt.run(
+                panelStmt.run(
                     label,
                     target,
                     value,
                     original,
                     unit,
+                    tag,
                     id,
                     function (err) {
-                        stmt.finalize();
                         if (err) {
                             reject(err);
-                        } else {
-                            const updatedPanel = {
-                                id,
-                                label,
-                                target,
-                                original,
-                                value,
-                                unit,
-                            };
-                            resolve(updatedPanel);
+                            return;
                         }
+                        console.log('Panel data updated successfully:', id);
+                        const updatedPanel = {
+                            id,
+                            label,
+                            target,
+                            original,
+                            value,
+                            unit,
+                            tag,
+                        };
+                        resolve(updatedPanel);
                     }
                 );
-            });
+                panelStmt.finalize();
+            })
+                .then((panel) => {
+                    return new Promise((resolve, reject) => {
+                        const filterStmt = db.prepare(
+                            'INSERT INTO filters (tag, activated) VALUES (?, ?)'
+                        );
+                        filterStmt.run(tag, true, function (filterErr) {
+                            if (filterErr) {
+                                console.log(
+                                    'Error inserting filter data',
+                                    filterErr
+                                );
+                                reject(filterErr);
+                                return;
+                            }
+
+                            console.log(
+                                'Filter data inserted successfully',
+                                this.lastID
+                            );
+                            resolve(panel);
+                        });
+                        filterStmt.finalize();
+                    });
+                })
+                .catch((error) => {
+                    console.error(
+                        'Error creating panel and inserting filter:',
+                        error
+                    );
+                    throw error;
+                });
         },
         deletePanelMutation: async (_, { id }) => {
             return new Promise((resolve, reject) => {
@@ -298,7 +354,6 @@ const resolvers = {
                         const deletePanel = {
                             id,
                         };
-                        console.log('deletePanelMutation:', id);
                         resolve(deletePanel);
                     }
                 });

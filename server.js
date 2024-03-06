@@ -39,7 +39,7 @@ db.run(
     `
     CREATE TABLE IF NOT EXISTS filters(
         id INTEGER PRIMARY KEY,
-        tag TEXT,
+        tag TEXT UNIQUE,
         activated BOOLEAN
     )
     `,
@@ -167,12 +167,12 @@ app.post('/api/data/', (req, res) => {
 
             stmt.run(label, target, value, original, unit, tag, function (err) {
                 if (err) {
-                    console.log('Error inserting data:', err);
+                    console.log('Error inserting panel data:', err);
                     reject(err);
                     return;
                 }
 
-                console.log('Data inserted successfully:', this.lastID);
+                console.log('Panel data inserted successfully:', label);
                 const panel = {
                     id: this.lastID,
                     label,
@@ -202,27 +202,37 @@ app.put('/api/data/:id', (req, res) => {
     }
 
     if (type === 'panel') {
-        const { target, value, original, unit } = req.body;
+        const { target, value, original, unit, tag } = req.body;
         return new Promise((resolve, reject) => {
             const stmt = db.prepare(
-                'UPDATE panels SET label = ?, target = ?, value = ?, original = ?, unit = ? WHERE id = ?'
+                'UPDATE panels SET label = ?, target = ?, value = ?, original = ?, unit = ?, tag = ? WHERE id = ?'
             );
-            stmt.run(label, target, value, original, unit, id, function (err) {
-                stmt.finalize();
-                if (err) {
-                    reject(err);
-                } else {
-                    const updatedPanel = {
-                        id,
-                        label,
-                        target,
-                        original,
-                        value,
-                        unit,
-                    };
-                    resolve(updatedPanel);
+            stmt.run(
+                label,
+                target,
+                value,
+                original,
+                unit,
+                tag,
+                id,
+                function (err) {
+                    stmt.finalize();
+                    if (err) {
+                        reject(err);
+                    } else {
+                        const updatedPanel = {
+                            id,
+                            label,
+                            target,
+                            original,
+                            value,
+                            unit,
+                            tag,
+                        };
+                        resolve(updatedPanel);
+                    }
                 }
-            });
+            );
         });
     } else if (type === 'tool') {
         return new Promise((resolve, reject) => {

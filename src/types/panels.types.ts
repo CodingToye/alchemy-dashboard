@@ -28,7 +28,8 @@ export interface IUpdatePanelHook {
         target: string,
         value: string,
         original: string,
-        unit: string
+        unit: string,
+        tag: string
     ) => void;
     closeUpdateModal: () => void;
     handleInputChange: (value: string, name: string) => void;

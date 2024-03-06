@@ -61,6 +61,7 @@ export const UPDATE_PANEL = gql`
         $original: String
         $value: String
         $unit: String
+        $tag: String
     ) {
         updatePanel(
             id: $id
@@ -69,6 +70,7 @@ export const UPDATE_PANEL = gql`
             original: $original
             value: $value
             unit: $unit
+            tag: $tag
         ) {
             id
             label
@@ -76,6 +78,7 @@ export const UPDATE_PANEL = gql`
             original
             value
             unit
+            tag
         }
     }
 `;

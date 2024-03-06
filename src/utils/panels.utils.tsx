@@ -19,3 +19,7 @@ export const valueDifference = (original: string, value: string) => {
         </small>
     ) : null;
 };
+
+export function calcPercentage(x: number, y: number) {
+    return (x / y) * 100;
+}

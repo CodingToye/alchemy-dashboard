@@ -1,16 +1,37 @@
 import React, { forwardRef, useState } from 'react';
+import { Path, UseFormRegister } from 'react-hook-form';
 
+export interface IFormValues {
+    inputLabel: string;
+    target: string;
+    value: string;
+    original: string;
+    unit: string;
+    tag: string;
+}
 interface InputProps {
-    name: string;
+    inputLabel: Path<IFormValues>;
     placeholder?: string;
     onChange: (value: string, name: string) => void;
     value?: string;
     tabIndex?: number;
     showLabel?: boolean;
+    register: UseFormRegister<IFormValues>;
+    required?: boolean;
+    singleErrorInput: string;
 }
 
 const Input: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
-    { name, placeholder, onChange, value, tabIndex, showLabel },
+    {
+        inputLabel,
+        placeholder,
+        onChange,
+        value,
+        tabIndex,
+        showLabel,
+        register,
+        required,
+    },
     ref
 ) => {
     const [fieldChanged, setFieldChanged] = useState(false);
@@ -18,23 +39,24 @@ const Input: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value: newValue } = e.target;
         setFieldChanged(true);
-        onChange(newValue, name);
+        onChange(newValue, inputLabel);
     };
 
     return (
         <fieldset className='relative' data-testid='input-component-test'>
             {showLabel && (
                 <label
-                    htmlFor={name}
+                    htmlFor={inputLabel}
                     className='absolute left-3 top-1.5 capitalize text-xs font-bold text-charcoal/75'
                 >
-                    {name}
+                    {inputLabel}
                 </label>
             )}
             <input
+                {...register(inputLabel, { required })}
                 type='text'
-                id={name}
-                name={name}
+                id={inputLabel}
+                name={inputLabel}
                 placeholder={placeholder}
                 className={`px-3 ${
                     showLabel && 'pt-6'
@@ -52,3 +74,5 @@ const Input: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
 };
 
 export default forwardRef(Input);
+
+// TODO Add validation

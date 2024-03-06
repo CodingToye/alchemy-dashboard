@@ -19,11 +19,14 @@ const useCreateFilter = (
 
     const createFocusRef = useRef<HTMLInputElement>(null);
 
+    let errorMsg;
+
     const openCreateFilterModal = () => {
         setIsCreateFilterModalOpen(true);
     };
 
     const closeCreateFilterModal = () => {
+        console.log('closeCreateFilterModal...');
         setIsCreateFilterModalOpen(false);
     };
 
@@ -51,10 +54,9 @@ const useCreateFilter = (
                     : { filters: [{ ...result }] }
             );
 
-            console.log(response);
-
             closeCreateFilterModal();
         } catch (error) {
+            errorMsg = 'ERROR';
             console.log('Failed to add new filter:', error);
         }
     };
@@ -73,6 +75,7 @@ const useCreateFilter = (
                 onChange={handleInputChange}
                 tabIndex={1}
                 ref={createFocusRef}
+                errorMsg={errorMsg}
             />
         </>
     );
@@ -88,3 +91,5 @@ const useCreateFilter = (
 };
 
 export default useCreateFilter;
+
+// TODO Error handling client side for duplicate tags

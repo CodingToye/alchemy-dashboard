@@ -45,7 +45,7 @@ const Toolbar = () => {
                         ?.filter((tool) => tool.installed)
                         .map((tool, index) => (
                             <dl
-                                className='flex flex-col items-center'
+                                className='flex flex-col items-center max-h-8'
                                 key={index}
                             >
                                 <dt className='text-xxs uppercase text-orange hover:text-white'>

@@ -64,6 +64,9 @@ export class UpdatePanelInput {
 
     @Field()
     unit!: string;
+
+    @Field()
+    tag!: string;
 }
 
 @InputType()

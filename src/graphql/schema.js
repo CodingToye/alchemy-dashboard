@@ -106,6 +106,7 @@ const Mutation = new GraphQLObjectType({
                 original: { type: GraphQLString },
                 value: { type: GraphQLString },
                 unit: { type: GraphQLString },
+                tag: { type: GraphQLString },
             },
             resolve: resolvers.Mutation.updatePanelMutation,
         },
