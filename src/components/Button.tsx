@@ -6,6 +6,7 @@ interface ButtonProps {
     children: React.ReactNode;
     mode?: 'default' | 'destructive';
     title?: string;
+    buttonType: 'submit' | 'reset' | 'button';
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -13,6 +14,7 @@ const Button: React.FC<ButtonProps> = ({
     onClick,
     mode = 'default',
     title,
+    buttonType,
 }) => {
     const btnClasses = classNames('rounded py-2 px-4 text-white', {
         'bg-orange': mode === 'default',
@@ -21,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({
     return (
         <button
             className={btnClasses}
-            type='button'
+            type={buttonType}
             title={title}
             onClick={onClick}
             data-testid='button-test'

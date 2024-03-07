@@ -2,18 +2,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 
-import Button from '../components/Button';
-
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
     dismissable: boolean;
-    actionButton: {
-        label: string;
-        onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-        args?: any[] | undefined;
-    };
     children: React.ReactNode;
 }
 
@@ -22,7 +15,6 @@ const Modal: React.FC<ModalProps> = ({
     onClose,
     title,
     dismissable,
-    actionButton,
     children,
 }) => {
     const [closeClicked, setCloseClicked] = useState(false);
@@ -51,14 +43,6 @@ const Modal: React.FC<ModalProps> = ({
         };
     }, [isOpen, handleOnClose]);
 
-    // TODO Check that this function is not calling the closeCreateFilterModal() function
-    const handleOnSave = (event: React.MouseEvent<HTMLButtonElement>) => {
-        console.log('handleOnSave...');
-        event.preventDefault();
-        actionButton.onClick(event, ...((actionButton.args as []) || []));
-        onClose();
-    };
-
     if (!isOpen) return null;
 
     return (
@@ -85,15 +69,7 @@ const Modal: React.FC<ModalProps> = ({
                             data-testid='modal-close-button'
                         />
                     </header>
-                    <div className='flex flex-col gap-4 p-4'>
-                        {children}
-
-                        <div className='flex flex-row justify-end text-charcoal'>
-                            <Button onClick={(event) => handleOnSave(event)}>
-                                {actionButton.label}
-                            </Button>
-                        </div>
-                    </div>
+                    <div className='p-4'>{children}</div>
                 </div>
             </div>
             <div
@@ -110,5 +86,3 @@ const Modal: React.FC<ModalProps> = ({
 };
 
 export default Modal;
-
-// TODO Add 'enter' key as a way to shortcut the click event

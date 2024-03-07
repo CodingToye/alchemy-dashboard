@@ -1,27 +1,24 @@
 import React, { forwardRef, useState } from 'react';
-import { Path, UseFormRegister } from 'react-hook-form';
+import { Path, UseFormRegister, FieldValues } from 'react-hook-form';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 
-export interface IFormValues {
-    inputLabel: string;
-    target: string;
-    value: string;
-    original: string;
-    unit: string;
-    tag: string;
-}
-interface InputProps {
-    inputLabel: Path<IFormValues>;
+interface InputProps<T extends FieldValues> {
+    inputLabel: Path<T>;
     placeholder?: string;
     onChange: (value: string, name: string) => void;
     value?: string;
     tabIndex?: number;
     showLabel?: boolean;
-    register: UseFormRegister<IFormValues>;
+    register: UseFormRegister<T>;
     required?: boolean;
-    singleErrorInput: string;
+    errors: Record<string, any>;
+    validationSchema?: any;
 }
 
-const Input: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
+const Input: React.ForwardRefRenderFunction<
+    HTMLInputElement,
+    InputProps<any>
+> = (
     {
         inputLabel,
         placeholder,
@@ -31,6 +28,8 @@ const Input: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
         showLabel,
         register,
         required,
+        errors,
+        validationSchema,
     },
     ref
 ) => {
@@ -52,8 +51,11 @@ const Input: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
                     {inputLabel}
                 </label>
             )}
+            <span className='absolute right-3 text-lg text-failure'>
+                {required ? '*' : ''}
+            </span>
             <input
-                {...register(inputLabel, { required })}
+                {...register(inputLabel, validationSchema)}
                 type='text'
                 id={inputLabel}
                 name={inputLabel}
@@ -65,10 +67,16 @@ const Input: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
                 } placeholder-iron/50 focus:placeholder-iron/20`}
                 onChange={handleChange}
                 tabIndex={tabIndex}
-                value={value !== '' ? value : ''}
-                ref={ref}
+                // value={value !== '' ? value : ''}
                 data-testid='input-test'
             />
+
+            {errors && errors[inputLabel]?.type === 'required' && (
+                <span className='text-failure p-2 flex items-center'>
+                    <ExclamationTriangleIcon className='w-4 h-4 mr-2' />{' '}
+                    {errors[inputLabel]?.message}
+                </span>
+            )}
         </fieldset>
     );
 };
