@@ -26,3 +26,5 @@ export const useDeleteAllPanels = () => {
 
     return { deleteAllPanels, loading, error };
 };
+
+// TODO implement this useDeleteAllPanels hook and feature

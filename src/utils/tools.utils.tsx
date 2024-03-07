@@ -12,7 +12,7 @@ const GetIcon = ({ type }) => {
     const handleOnClick = () => {
         setActivated(!activated);
     };
-    const iconClass = `w-4 h-4 transition cursor-pointer ${
+    const iconClass = `w-4 h-4 transition cursor-pointer  ${
         activated ? 'text-white' : 'text-white/50'
     }`;
     switch (type) {

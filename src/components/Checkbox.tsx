@@ -27,6 +27,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         <fieldset className='relative' data-testid='checkbox-component-test'>
             <input
                 type='checkbox'
+                className='focus:ring-offset-0 focus:ring-0 p-2.5 checked:bg-orange cursor-pointer'
                 id={id}
                 checked={isChecked}
                 onChange={handleChange}

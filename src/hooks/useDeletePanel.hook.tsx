@@ -33,3 +33,5 @@ const useDeletePanel = (
 };
 
 export default useDeletePanel;
+
+// TODO Add client side error handling

@@ -10,29 +10,43 @@ const typeDefs = gql`
         original: String
         value: String
         unit: String
+        tag: String
+    }
+
+    type Filter {
+        id: String
+        tag: String
+        activated: Boolean
     }
 
     type Query {
         panels: [Panel]
+        filters: [Filter]
+        activeFilters: [Filter!]!
     }
 
     type Mutation {
-        createPanel(
+        createPanelMutation(
             label: String!
             target: String!
             value: String!
             original: String!
             unit: String!
+            tag: String!
         ): Panel
-        updatePanel(
+        createFilterMutation(tag: String!, activated: Boolean!): Filter
+        activateFilterMutation(id: String!, activated: Boolean!): Filter
+        deleteFilterMutation(id: String!): Filter
+        updatePanelMutation(
             id: String!
             label: String
             target: String
             original: String
             value: String
             unit: String
+            tag: String
         ): Panel
-        deletePanel(id: String!): Panel
+        deletePanelMutation(id: String!): Panel
         deleteAllPanels: Panel
     }
 `;

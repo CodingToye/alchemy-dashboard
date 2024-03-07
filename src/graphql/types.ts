@@ -16,6 +16,33 @@ export class CreatePanelInput {
 
     @Field()
     unit!: string;
+
+    @Field()
+    tag!: string;
+}
+
+@InputType()
+export class CreateFilterInput {
+    @Field()
+    tag!: string;
+
+    @Field()
+    activated!: boolean;
+}
+
+@InputType()
+export class ActivateFilterInput {
+    @Field()
+    id!: string;
+
+    @Field()
+    activated!: boolean;
+}
+
+@InputType()
+export class DeleteFilterInput {
+    @Field()
+    id!: string;
 }
 
 @InputType()
@@ -37,6 +64,9 @@ export class UpdatePanelInput {
 
     @Field()
     unit!: string;
+
+    @Field()
+    tag!: string;
 }
 
 @InputType()
