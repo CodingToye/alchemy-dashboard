@@ -23,9 +23,9 @@ function App() {
 
 export default App;
 
-// TODO Implement a favourite panel feature
-// TODO Implement a sort panel feature
-// TODO Implement a smart home integration with Google feature
+// FEATURE Implement a favourite panel feature
+// FEATURE Implement a sort panel feature
+// FEATURE Implement a smart home integration with Google feature
 // TODO Add integration tests
 // TODO Add E2E tests
 // TODO Add a Toast component

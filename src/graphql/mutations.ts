@@ -53,6 +53,14 @@ export const DELETE_FILTER = gql`
     }
 `;
 
+export const DELETE_ALL_FILTERS = gql`
+    mutation deleteAllFiltersMutation {
+        deleteAllFilters {
+            id
+        }
+    }
+`;
+
 export const UPDATE_PANEL = gql`
     mutation updatePanelMutation(
         $id: String!
@@ -92,7 +100,7 @@ export const DELETE_PANEL = gql`
 `;
 
 export const DELETE_ALL_PANELS = gql`
-    mutation {
+    mutation deleteAllPanelsMutation {
         deleteAllPanels {
             id
         }

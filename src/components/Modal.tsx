@@ -69,7 +69,7 @@ const Modal: React.FC<ModalProps> = ({
                             data-testid='modal-close-button'
                         />
                     </header>
-                    <div className='p-4'>{children}</div>
+                    <div className='p-4'>{children} </div>
                 </div>
             </div>
             <div

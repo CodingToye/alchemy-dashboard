@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Path, UseFormRegister, FieldValues } from 'react-hook-form';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 
@@ -12,29 +12,25 @@ interface InputProps<T extends FieldValues> {
     register: UseFormRegister<T>;
     required?: boolean;
     errors: Record<string, any>;
-    validationSchema?: any;
+    validationSchema?: {};
 }
 
 const Input: React.ForwardRefRenderFunction<
     HTMLInputElement,
     InputProps<any>
-> = (
-    {
-        inputLabel,
-        placeholder,
-        onChange,
-        value,
-        tabIndex,
-        showLabel,
-        register,
-        required,
-        errors,
-        validationSchema,
-    },
-    ref
-) => {
+> = ({
+    inputLabel,
+    placeholder,
+    onChange,
+    value,
+    tabIndex,
+    showLabel,
+    register,
+    required,
+    errors,
+    validationSchema,
+}) => {
     const [fieldChanged, setFieldChanged] = useState(false);
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value: newValue } = e.target;
         setFieldChanged(true);
@@ -67,7 +63,7 @@ const Input: React.ForwardRefRenderFunction<
                 } placeholder-iron/50 focus:placeholder-iron/20`}
                 onChange={handleChange}
                 tabIndex={tabIndex}
-                // value={value !== '' ? value : ''}
+                value={value !== '' ? value : ''}
                 data-testid='input-test'
             />
 
@@ -77,10 +73,15 @@ const Input: React.ForwardRefRenderFunction<
                     {errors[inputLabel]?.message}
                 </span>
             )}
+
+            {errors && errors[inputLabel]?.type === 'maxLength' && (
+                <span className='text-failure p-2 flex items-center'>
+                    <ExclamationTriangleIcon className='w-4 h-4 mr-2' />{' '}
+                    {errors[inputLabel]?.message}
+                </span>
+            )}
         </fieldset>
     );
 };
 
-export default forwardRef(Input);
-
-// TODO Add validation
+export default Input;
