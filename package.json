@@ -40,7 +40,8 @@
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "start:server": "ts-node server.js"
+        "start:server": "ts-node server.js",
+        "prepare": "husky"
     },
     "eslintConfig": {
         "extends": [
@@ -68,10 +69,5 @@
         "sqlite3": "^5.1.7",
         "tailwindcss": "^3.4.1",
         "ts-node": "^10.9.2"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "npm run test -- --watchAll=false"
-        }
     }
 }
