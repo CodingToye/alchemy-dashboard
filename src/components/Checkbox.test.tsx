@@ -5,14 +5,16 @@ import Checkbox from './Checkbox';
 describe('Checkbox', () => {
     const handleChange = jest.fn();
     const checkboxLabel = 'Check me';
+    const register = jest.fn();
 
     const renderCheckbox = (checkedState: true | false) => {
         return render(
             <Checkbox
                 id='1'
                 onChange={handleChange}
-                label={checkboxLabel}
+                checkboxLabel={checkboxLabel}
                 checked={checkedState}
+                register={register}
             />
         );
     };

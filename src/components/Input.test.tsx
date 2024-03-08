@@ -8,16 +8,20 @@ describe('Input', () => {
     const inputPlaceholder = 'My input placeholder';
     const inputValue = '';
     const inputTabIndex = 1;
+    const register = jest.fn();
+    const errors = jest.fn();
 
     const renderInput = (inputShowLabel: true | false) => {
         return render(
             <Input
-                name={inputName}
+                inputLabel={inputName}
                 onChange={handleChange}
                 placeholder={inputPlaceholder}
                 value={inputValue}
                 tabIndex={inputTabIndex}
                 showLabel={inputShowLabel}
+                register={register}
+                errors={errors}
             />
         );
     };
