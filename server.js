@@ -17,7 +17,7 @@ db.run(
     `
     CREATE TABLE IF NOT EXISTS panels(
         id INTEGER PRIMARY KEY,
-        label TEXT,
+        label TEXT UNIQUE,
         target TEXT,
         value TEXT,
         original TEXT,

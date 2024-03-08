@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
+import { Path, UseFormRegister, FieldValues } from 'react-hook-form';
 
-interface CheckboxProps {
+interface CheckboxProps<T extends FieldValues> {
+    checkboxLabel: Path<T>;
     id: string;
-    label?: string;
+    register: UseFormRegister<T>;
     onChange?: (isChecked: boolean) => void;
     checked?: boolean;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({
+const Checkbox: React.FC<CheckboxProps<any>> = ({
+    checkboxLabel,
     id,
-    label,
+    register,
     onChange,
     checked = false,
 }) => {
@@ -26,6 +29,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
     return (
         <fieldset className='relative' data-testid='checkbox-component-test'>
             <input
+                {...register(checkboxLabel)}
                 type='checkbox'
                 className='focus:ring-offset-0 focus:ring-0 p-2.5 checked:bg-orange cursor-pointer'
                 id={id}
@@ -34,7 +38,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
                 data-testid='checkbox-test'
             />
             <label htmlFor={id} className='ml-2'>
-                {label}
+                {checkboxLabel}
             </label>
         </fieldset>
     );

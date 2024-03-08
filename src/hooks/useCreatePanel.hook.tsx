@@ -7,6 +7,8 @@ import { CreatePanelInput } from '../graphql/types';
 
 import { useForm } from 'react-hook-form';
 import Input from '../components/Input';
+import Button from '../components/Button';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 
 interface IFormValues {
     label: string;
@@ -30,18 +32,23 @@ const useCreatePanel = (
     };
     const [createPanelMutation] = useMutation(CREATE_PANEL);
     const [isCreatePanelModalOpen, setIsCreatePanelModalOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [newPanelData, setNewPanelData] =
         useState<CreatePanelInput>(initialData);
     const {
         register,
         handleSubmit,
         reset,
-        // setFocus,
+        setFocus,
         formState: { errors },
-    } = useForm<IFormValues>();
+    } = useForm<IFormValues>({ mode: 'onSubmit' });
 
     const openCreatePanelModal = () => {
         setIsCreatePanelModalOpen(true);
+        setErrorMessage('');
+        setTimeout(() => {
+            setFocus('label');
+        }, 0);
         setNewPanelData(initialData);
         reset(initialData);
     };
@@ -77,10 +84,17 @@ const useCreatePanel = (
             closeCreatePanelModal();
         } catch (error) {
             console.log('Failed to add new panel:', error);
+            if (
+                error.message.includes('UNIQUE constraint failed: panels.label')
+            ) {
+                setErrorMessage('Failed to create panel as it already exists.');
+            } else {
+                setErrorMessage('Generic error');
+            }
         }
     };
 
-    const onSubmit = (data: IFormValues) => {
+    const onSubmit = () => {
         handleCreatePanel();
         reset();
     };
@@ -90,6 +104,12 @@ const useCreatePanel = (
             onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col gap-4 '
         >
+            {errorMessage && (
+                <span className='text-failure p-2 flex items-center'>
+                    <ExclamationTriangleIcon className='w-4 h-4 mr-2' />
+                    {errorMessage}
+                </span>
+            )}
             <Input
                 inputLabel='label'
                 placeholder='Label'
@@ -97,7 +117,11 @@ const useCreatePanel = (
                 tabIndex={1}
                 register={register}
                 validationSchema={{
-                    required: 'Label is required...',
+                    required: 'Label is required',
+                    maxLength: {
+                        value: 12,
+                        message: 'Please enter a maximum of 12 characters',
+                    },
                 }}
                 required
                 errors={errors}
@@ -109,7 +133,11 @@ const useCreatePanel = (
                 tabIndex={2}
                 register={register}
                 validationSchema={{
-                    required: 'Target is required...',
+                    required: 'Target is required',
+                    maxLength: {
+                        value: 6,
+                        message: 'Please enter a maximum of 6 characters',
+                    },
                 }}
                 required
                 errors={errors}
@@ -122,6 +150,10 @@ const useCreatePanel = (
                 register={register}
                 validationSchema={{
                     required: 'Value is required...',
+                    maxLength: {
+                        value: 6,
+                        message: 'Please enter a maximum of 6 characters',
+                    },
                 }}
                 required
                 errors={errors}
@@ -132,6 +164,12 @@ const useCreatePanel = (
                 onChange={handleInputChange}
                 tabIndex={4}
                 register={register}
+                validationSchema={{
+                    maxLength: {
+                        value: 5,
+                        message: 'Please enter a maximum of 5 characters',
+                    },
+                }}
                 errors={errors}
             />
             <Input
@@ -143,11 +181,7 @@ const useCreatePanel = (
                 errors={errors}
             />
             <div className='flex flex-row justify-end text-charcoal'>
-                <input
-                    type='submit'
-                    value='Create Panel'
-                    className='rounded py-2 px-4 text-white bg-orange'
-                />
+                <Button buttonType='submit'>Create Panel</Button>
             </div>
         </form>
     );
@@ -164,8 +198,4 @@ const useCreatePanel = (
 
 export default useCreatePanel;
 
-// TODO Check for duplicate labels, add UNIQUE in sql statement
-// TODO setFocus on 1st field
-// TODO Add 'enter' key as a way to shortcut the click event
-// TODO Prevent empty tag being sent to filters table if it field has not been populated
-// TODO Add max-length for all fields
+// TODO Add the validation on the onChange also

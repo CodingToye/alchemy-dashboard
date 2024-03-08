@@ -1,11 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ICreateFilterHook, IFilters, IFilter } from '../types/filters.types';
 import { useMutation } from '@apollo/client';
 
 import { CREATE_FILTER } from '../graphql/mutations';
 import { CreateFilterInput } from '../graphql/types';
 
+import { useForm } from 'react-hook-form';
 import Input from '../components/Input';
+import Button from '../components/Button';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/solid';
+
+interface IFormValues {
+    tag: string;
+}
+
 const useCreateFilter = (
     setData: React.Dispatch<React.SetStateAction<IFilters | null>>
 ): ICreateFilterHook => {
@@ -16,13 +24,22 @@ const useCreateFilter = (
         tag: '',
         activated: false,
     });
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const createFocusRef = useRef<HTMLInputElement>(null);
-
-    let errorMsg;
+    const {
+        register,
+        handleSubmit,
+        reset,
+        setFocus,
+        formState: { errors },
+    } = useForm<IFormValues>({ mode: 'onSubmit' });
 
     const openCreateFilterModal = () => {
         setIsCreateFilterModalOpen(true);
+        setErrorMessage('');
+        setTimeout(() => {
+            setFocus('tag');
+        }, 0);
     };
 
     const closeCreateFilterModal = () => {
@@ -56,28 +73,56 @@ const useCreateFilter = (
 
             closeCreateFilterModal();
         } catch (error) {
-            errorMsg = 'ERROR';
             console.log('Failed to add new filter:', error);
+            if (
+                error.message.includes('UNIQUE constraint failed: filters.tag')
+            ) {
+                setErrorMessage(
+                    'Failed to create filter as it already exists.'
+                );
+            } else {
+                setErrorMessage('Generic error');
+            }
         }
     };
 
-    useEffect(() => {
-        if (isCreateFilterModalOpen && createFocusRef.current) {
-            createFocusRef.current.focus();
-        }
-    }, [isCreateFilterModalOpen]);
+    const onSubmit = () => {
+        handleCreateFilter();
+        reset();
+    };
 
     const modalCreateFilterContent = (
-        <>
+        <form
+            onSubmit={handleSubmit(onSubmit)}
+            className='flex flex-col gap-4 '
+        >
+            {errorMessage && (
+                <span className='text-failure p-2 flex items-center'>
+                    <ExclamationTriangleIcon className='w-4 h-4 mr-2' />
+                    {errorMessage}
+                </span>
+            )}
             <Input
-                name='tag'
+                inputLabel='tag'
                 placeholder='Filter'
                 onChange={handleInputChange}
                 tabIndex={1}
-                ref={createFocusRef}
-                errorMsg={errorMsg}
+                register={register}
+                validationSchema={{
+                    required: 'Label is required',
+                    maxLength: {
+                        value: 12,
+                        message: 'Please enter a maximum of 12 characters',
+                    },
+                }}
+                required
+                errors={errors}
             />
-        </>
+
+            <div className='flex flex-row justify-end text-charcoal'>
+                <Button buttonType='submit'>Create Filter</Button>
+            </div>
+        </form>
     );
 
     return {
@@ -91,5 +136,3 @@ const useCreateFilter = (
 };
 
 export default useCreateFilter;
-
-// TODO Error handling client side for duplicate tags

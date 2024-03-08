@@ -3,6 +3,8 @@ import Modal from '../../components/Modal';
 
 import useFetchData from '../../hooks/useFetchData.hook';
 import useInstallTool from '../../hooks/useInstallTool.hook';
+import useDeleteAllPanels from '../../hooks/useDeleteAllPanels.hook';
+import useDeleteAllFilters from '../../hooks/useDeleteAllFilters.hook';
 import GetIcon from '../../utils/tools.utils';
 
 import {
@@ -21,6 +23,14 @@ const Toolbar = () => {
         closeInstallToolModal,
         handleInstall,
     } = useInstallTool(dataTools, setDataTools);
+
+    const { deleteAllPanels } = useDeleteAllPanels();
+    const { deleteAllFilters } = useDeleteAllFilters();
+
+    const deleteAllData = () => {
+        deleteAllPanels();
+        deleteAllFilters();
+    };
 
     const renderTools = () => {
         if (loading) {
@@ -65,7 +75,10 @@ const Toolbar = () => {
         <>
             <header className='flex p-4 bg-black'>
                 <h1 className='flex font-display text-3xl'>
-                    <BeakerIcon className='h-8 w-8' />
+                    <BeakerIcon
+                        className='h-8 w-8 cursor-pointer'
+                        onClick={deleteAllData}
+                    />
                 </h1>
                 <div className='flex grow justify-between ml-6 pl-6 border-white/25 border-l'>
                     <div className='flex grow gap-12 justify-between mr-6 pr-6 border-inherit border-r'>
@@ -109,3 +122,5 @@ const Toolbar = () => {
 };
 
 export default Toolbar;
+
+// TODO Add React Hooks Form integration for Tools installation

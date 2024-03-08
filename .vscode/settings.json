@@ -1,3 +1,10 @@
 {
-    "todo-tree.tree.showBadges": true
+    "todo-tree.tree.showBadges": true,
+    "todohighlight.keywords": [
+        {
+            "text": "FEATURE",
+            "color": "#bada55",
+            "backgroundColor": "#3d3d3d"
+        }
+    ]
 }

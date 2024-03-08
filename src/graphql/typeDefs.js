@@ -37,6 +37,7 @@ const typeDefs = gql`
         createFilterMutation(tag: String!, activated: Boolean!): Filter
         activateFilterMutation(id: String!, activated: Boolean!): Filter
         deleteFilterMutation(id: String!): Filter
+        deleteAllFiltersMutation: Filter
         updatePanelMutation(
             id: String!
             label: String
@@ -47,7 +48,7 @@ const typeDefs = gql`
             tag: String
         ): Panel
         deletePanelMutation(id: String!): Panel
-        deleteAllPanels: Panel
+        deleteAllPanelsMutation: Panel
     }
 `;
 

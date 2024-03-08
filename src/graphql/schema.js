@@ -97,6 +97,10 @@ const Mutation = new GraphQLObjectType({
             },
             resolve: resolvers.Mutation.deleteFilterMutation,
         },
+        deleteAllFilters: {
+            type: FilterType,
+            resolve: resolvers.Mutation.deleteAllFiltersMutation,
+        },
         updatePanel: {
             type: PanelType,
             args: {
@@ -119,7 +123,7 @@ const Mutation = new GraphQLObjectType({
         },
         deleteAllPanels: {
             type: PanelType,
-            resolve: resolvers.Mutation.deleteAllPanels,
+            resolve: resolvers.Mutation.deleteAllPanelsMutation,
         },
         installTool: {
             type: ToolType,

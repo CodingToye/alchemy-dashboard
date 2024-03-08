@@ -8,7 +8,6 @@ describe('Modal', () => {
     const modalIsOpen = true;
     const modalTitle = 'Modal title';
     const modalDismissable = true;
-    const modalActionButtonLabel = 'Action Button label';
 
     const renderModal = () => {
         return render(
@@ -17,11 +16,6 @@ describe('Modal', () => {
                 title={modalTitle}
                 onClose={handleOnClose}
                 dismissable={modalDismissable}
-                actionButton={{
-                    label: modalActionButtonLabel,
-                    onClick: handleOnClick,
-                    args: [],
-                }}
             >
                 Modal Content
             </Modal>
@@ -48,21 +42,6 @@ describe('Modal', () => {
         renderModal();
         const backdrop = screen.getByTestId('modal-backdrop-test');
         fireEvent.click(backdrop);
-        await waitFor(() => {
-            expect(handleOnClose).toHaveBeenCalled();
-        });
-    });
-
-    test('triggers action button onClick and closes modal when action button is clicked', async () => {
-        renderModal();
-        const modalActionButton = screen.getByRole('button', {
-            name: /action button label/i,
-        });
-
-        fireEvent.click(modalActionButton);
-        await waitFor(() => {
-            expect(handleOnClick).toHaveBeenCalled();
-        });
         await waitFor(() => {
             expect(handleOnClose).toHaveBeenCalled();
         });
